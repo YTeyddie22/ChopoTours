@@ -4,13 +4,15 @@
 	"description": "",
 	"main": "app.js",
 	"scripts": {
-		"start": "nodemon app.js"
+		"start": "nodemon server.js"
 	},
 	"author": "Teddy Yongo",
 	"license": "ISC",
 	"dependencies": {
 		"express": "^4.17.1",
-		"morgan": "^1.10.0",
-		"nodemon": "^2.0.14"
+		"morgan": "^1.10.0"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.15"
 	}
 }

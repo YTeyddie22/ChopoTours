@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const express = require('express');
 
 const morgan = require('morgan');
@@ -26,8 +24,4 @@ app.use('/api/v1/users', userRouter);
 
 //! Listening to the port;
 
-const port = 3000;
-
-app.listen(port, function () {
-	console.log('app running on port', port);
-});
+module.exports = app;
