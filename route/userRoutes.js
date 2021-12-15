@@ -1,25 +1,12 @@
 const express = require('express');
 
-//! get all Users method;
-
-const getAllUsers = (req, res) => {
-	res.status(500).json({
-		status: 'error',
-		message: 'This route is not yet defined',
-	});
-};
-
-//! get specific user  method;
-const getUser = (req, res) => {};
-
-//!Post new User;
-const createUser = (req, res) => {};
-
-//!Update user method;
-const updateUser = (req, res) => {};
-
-//!delete user method;
-const deleteUser = (req, res) => {};
+const {
+	getAllUsers,
+	getUser,
+	createUser,
+	updateUser,
+	deleteUser,
+} = require('./../Controllers/usersController');
 
 //!Users
 
