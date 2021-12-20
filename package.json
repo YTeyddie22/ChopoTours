@@ -1,28 +1,29 @@
 {
-	"name": "tours",
-	"version": "1.0.0",
-	"description": "",
-	"main": "app.js",
-	"scripts": {
-		"start:dev": "supervisor server.js ",
-		"start:prod": "NODE_ENV=production supervisor server.js "
-	},
-	"author": "Teddy Yongo",
-	"license": "ISC",
-	"dependencies": {
-		"dotenv": "^10.0.0",
-		"express": "^4.17.1",
-		"morgan": "^1.10.0"
-	},
-	"devDependencies": {
-		"eslint": "^8.4.1",
-		"eslint-config-airbnb": "^19.0.2",
-		"eslint-config-prettier": "^8.3.0",
-		"eslint-plugin-import": "^2.25.3",
-		"eslint-plugin-jsx-a11y": "^6.5.1",
-		"eslint-plugin-node": "^11.1.0",
-		"eslint-plugin-prettier": "^4.0.0",
-		"eslint-plugin-react": "^7.27.1",
-		"prettier": "^2.5.1"
-	}
+  "name": "tours",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "supervisor server.js ",
+    "start:prod": "NODE_ENV=production supervisor server.js "
+  },
+  "author": "Teddy Yongo",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.13",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.4.1",
+    "eslint-config-airbnb": "^19.0.2",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.27.1",
+    "prettier": "^2.5.1"
+  }
 }
