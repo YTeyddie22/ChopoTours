@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "supervisor server.js ",
-    "start:prod": "NODE_ENV=production supervisor server.js "
+    "start": "nodemon server.js ",
+    "start:prod": "NODE_ENV=production nodemon server.js "
   },
   "author": "Teddy Yongo",
   "license": "ISC",
@@ -24,6 +24,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.27.1",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "supervisor": "^0.12.0"
   }
 }
