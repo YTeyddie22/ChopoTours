@@ -37,14 +37,6 @@ exports.getTour = async (req, res) => {
       message: error,
     });
   }
-
-  //?Params found ?;
-  res.status(200).json({
-    status: "success",
-    data: {
-      tour,
-    },
-  });
 };
 
 //! Post method;
