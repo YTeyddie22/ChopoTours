@@ -4,15 +4,15 @@ const Tour = require("./../Models/tourModel");
 exports.getAllTours = async (req, res) => {
   try {
 
+//~ 1.Filtering
 
-    //* Creating a query object
-
-
-//~ Filtering
+  //* Creating a query object
 
   const queryObj = {...req.query}
 
-  const excludedItems = ['page','limit','sort','field']
+  const excludedItems = ['page','limit','sort','fields']
+
+  //* Removing the excluded items
 
   excludedItems.forEach(i=>delete queryObj[i])
 
@@ -23,19 +23,32 @@ exports.getAllTours = async (req, res) => {
       let query = Tour.find(JSON.parse(queryStr))
 
 
-      //~ Sorting
+      //~ 2.Sorting
 
       if(req.query.sort){
         const sortBy = req.query.sort.split(',').join(" ")
 
         query = query.sort(sortBy)
-        console.log(query);
+
+      }
+
+
+
+      //~ 3. Limiting fields
+      if(req.query.fields){
+
+        const fields = req.query.fields.split(',').join(' ')
+
+
+        query = query.select(fields)
+
+      }
+      else {
+      query = query.select('-__v')
+
       }
 
       const tours = await query
-
-
-
 
     res.status(200).json({
       status: "success",
