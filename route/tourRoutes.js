@@ -1,6 +1,7 @@
 const express = require("express");
 
 const {
+  aliasingTopTours,
   getAllTours,
   getTour,
   createTour,
@@ -10,7 +11,12 @@ const {
 
 //! Checking the Routes;
 const router = express.Router();
-/* router.param('id', checkID); */
+
+//! Aliasing Router
+
+router.route(`/top-5-tours`).get(aliasingTopTours,getAllTours)
+
+
 
 //! Creating a body middleware;
 //* Get and Post
