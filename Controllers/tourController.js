@@ -48,6 +48,21 @@ exports.getAllTours = async (req, res) => {
 
       }
 
+
+      //~ 4. Pagination
+
+      const page = +req.query.page||1;
+      const limit = +req.query.limit||100;
+      const skipped = (page-1)*limit
+
+      query = query.skip(skipped).limit(limit)
+
+        if(req.query.page){
+          const tourCount = await Tour.countDocuments();
+
+          if(skipped>=tourCount) throw new Error(`The page doesn't exist`)
+        }
+
       const tours = await query
 
     res.status(200).json({
