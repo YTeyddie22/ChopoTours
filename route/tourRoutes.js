@@ -7,6 +7,7 @@ const {
   createTour,
   updateTours,
   deleteTours,
+  getTourStats
 } = require("./../Controllers/tourController");
 
 //! Checking the Routes;
@@ -15,6 +16,10 @@ const router = express.Router();
 //! Aliasing Router
 
 router.route(`/top-5-tours`).get(aliasingTopTours,getAllTours)
+
+//!Aggregation Pipelining
+
+router.route('/tour-stats').get(getTourStats)
 
 
 
