@@ -7,7 +7,8 @@ const {
   createTour,
   updateTours,
   deleteTours,
-  getTourStats
+  getTourStats,
+  getMonthlyPlan,
 } = require("./../Controllers/tourController");
 
 //! Checking the Routes;
@@ -15,13 +16,12 @@ const router = express.Router();
 
 //! Aliasing Router
 
-router.route(`/top-5-tours`).get(aliasingTopTours,getAllTours)
+router.route(`/top-5-tours`).get(aliasingTopTours, getAllTours);
 
 //!Aggregation Pipelining
 
-router.route('/tour-stats').get(getTourStats)
-
-
+router.route("/tour-stats").get(getTourStats);
+router.route("/monthly-plan/:year").get(getMonthlyPlan);
 
 //! Creating a body middleware;
 //* Get and Post
