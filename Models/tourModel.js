@@ -88,6 +88,21 @@ tourSchema.pre("save", function (next) {
 //TODO Query Middleware
 
 tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  next();
+});
+
+tourSchema.post(/^find/, function (next) {
+  console.log("tourSchema Posting a query");
+  next();
+});
+
+////////////////////////////////////////////////////////////
+
+//!Aggregate schema with a middleWare from mongoose
+
+tourSchema.pre("aggregate", function (next) {
+  this.pipeline().unshift({ $match: { $ne: true } });
   next();
 });
 
