@@ -38,8 +38,18 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    price: {
+      type: Number,
+      required: [true, "A tour must have a price"],
+    },
     priceDiscount: {
       type: Number,
+      validate: {
+        validator: function (val) {
+          return val < this.price;
+        },
+        message: "Discount ({VALUE}) has to be less than the price",
+      },
     },
     summary: {
       type: String,
@@ -65,10 +75,7 @@ const tourSchema = new mongoose.Schema(
       default: false,
     },
     startDates: [Date],
-    price: {
-      type: Number,
-      required: [true, "A tour must have a price"],
-    },
+
     rating: {
       type: Number,
       default: 4.5,
