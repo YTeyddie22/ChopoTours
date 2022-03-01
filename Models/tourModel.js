@@ -107,11 +107,6 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-tourSchema.post(/^find/, function (next) {
-  console.log("tourSchema Posting a query");
-  next();
-});
-
 ////////////////////////////////////////////////////////////
 
 //!Aggregate schema with a middleWare from mongoose
