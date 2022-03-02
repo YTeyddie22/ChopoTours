@@ -1,7 +1,10 @@
 //! Error function in development
+
+//TODO
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
-    status: err.statusCode,
+    status: err.status,
     error: err,
     message: err.message,
     stack: err.stack,
@@ -31,6 +34,11 @@ const sendErrorProd = (err, res) => {
 //* Exporting the Errors either in production || development mode
 
 module.exports = (err, req, res, next) => {
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  });
+
   //? Development ||| Production
 
   if (process.env.NODE_ENV === "development") {
