@@ -1,7 +1,5 @@
 //! Error function in development
 
-//TODO
-
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
