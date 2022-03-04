@@ -34,11 +34,6 @@ const sendErrorProd = (err, res) => {
 //* Exporting the Errors either in production || development mode
 
 module.exports = (err, req, res, next) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-
   //? Development ||| Production
 
   if (process.env.NODE_ENV === "development") {

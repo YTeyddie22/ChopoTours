@@ -32,4 +32,6 @@ app.all("*", (req, res, next) => {
 
 app.use(globalErrorController);
 
+console.log(app.get("env") === "development");
+
 module.exports = app;
