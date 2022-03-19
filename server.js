@@ -26,3 +26,18 @@ const port = 3000 || process.env.PORT;
 app.listen(port, () => {
   console.log(`App is running on port ${port}...`);
 });
+
+//Uncaught Errors outside Express
+/* 
+process.on('unhandledRejection',(err)=>{
+  console.log(err);
+  server.close(()=>{
+    process.exit(1);
+  })
+})
+process.on('uncaughtException',(err)=>{
+  console.log(err);
+  server.close(()=>{
+    process.exit(1);
+  })
+}) */
