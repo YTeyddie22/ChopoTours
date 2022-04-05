@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Enter Your name"],
-
-    minLength: [20, "A tour must have more than or 10 characters"],
-    maxLength: [40, "A tour must have less than or 40 characters"],
+    maxLength: [15, "A tour must have less than or 40 characters"],
   },
   email: {
     type: String,
@@ -16,10 +15,7 @@ const userSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    required: [true, "Enter Email"],
     unique: true,
-    minLength: [10, "A tour must have more than or 10 characters"],
-    maxLength: [40, "A tour must have less than or 40 characters"],
   },
   password: {
     type: String,
