@@ -27,9 +27,11 @@ const sendValidationErrDB = (err) => {
 //! Error function in development
 
 const sendErrorDev = (err, res) => {
+  const errObject = { ...err };
+  errObject.errmsg = err.message;
   res.status(err.statusCode).json({
     status: err.status,
-    error: err,
+    error: errObject,
     message: err.message,
     stack: err.stack,
   });
@@ -39,11 +41,13 @@ const sendErrorDev = (err, res) => {
 
 const sendErrorProd = (err, res) => {
   //? For The Client invalidation
+  const errObject = { ...err };
+  errObject.errmsg = err.message;
 
   if (err.isOperational) {
     res.status(err.statusCode).json({
       status: err.status,
-      message: err.message,
+      message: err.errmsg,
     });
   } else {
     // 1) Log error
