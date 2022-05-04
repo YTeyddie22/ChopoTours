@@ -20,7 +20,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     confirmPassword: req.body.confirmPassword,
   });
 
-  const token = signUpToken(newUser);
+  const token = signUpToken(newUser._id);
 
   res.status(201).json({
     status: "success",
