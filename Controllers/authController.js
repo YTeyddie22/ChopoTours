@@ -1,6 +1,12 @@
 const jwt = require("jsonwebtoken");
-const User = require("./.././Models/userModel");
+const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
+
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
 
 //! SignUp function
 module.exports.signup = catchAsync(async (req, res, next) => {
@@ -12,9 +18,8 @@ module.exports.signup = catchAsync(async (req, res, next) => {
     confirmPassword: req.body.confirmPassword,
   });
 
-  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+  const token = signToken(newUser._id);
+
   res.status(201).json({
     status: "success",
     token,

@@ -8,6 +8,7 @@ const {
   deleteUser,
 } = require("./../Controllers/usersController");
 
+//* Router for authentication and login
 const { signup } = require("./../Controllers/authController");
 
 //!Users
