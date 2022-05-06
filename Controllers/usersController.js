@@ -18,14 +18,63 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-//! get specific user  method;
-exports.getUser = (req, res) => {};
+//! Get specific tour  method;
+exports.getTour = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
 
-//!Post new User;
-exports.createUser = (req, res) => {};
+  if (!user) return next(new AppError(`No tour found with id`, 404));
 
-//!Update user method;
-exports.updateUser = (req, res) => {};
+  res.status(200).json({
+    status: "success",
+    data: {
+      tour,
+    },
+  });
+});
 
-//!delete user method;
-exports.deleteUser = (req, res) => {};
+//! Post method;
+
+exports.createTour = catchAsync(async (req, res, next) => {
+  //* awaiting the promise;
+
+  const newUser = await User.create(req.body);
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      user: newUser,
+    },
+  });
+});
+
+//! Update tour method;
+
+exports.updateUser = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+
+    runValidators: true,
+  });
+
+  if (!user) return next(new AppError(`Cannot update user`, 404));
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
+});
+
+//!  Delete Tour method;
+
+exports.deleteUser = catchAsync(async (req, res, next) => {
+  const user = User.findByIdAndDelete(req.params.id);
+
+  if (!user) return next(new AppError(`No tour found with id`, 404));
+
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});

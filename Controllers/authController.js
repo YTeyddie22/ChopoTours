@@ -7,9 +7,8 @@ const signToken = (id) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
-
 //! SignUp function
-module.exports.signup = catchAsync(async (req, res, next) => {
+exports.signup = catchAsync(async (req, res, next) => {
   //* Signing up a new user
   const newUser = await User.create({
     name: req.body.name,
@@ -26,5 +25,26 @@ module.exports.signup = catchAsync(async (req, res, next) => {
     data: {
       user: newUser,
     },
+  });
+});
+
+//! for Logging in
+
+exports.login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password)
+    return next(new AppError(`Enter both password and email`, 400));
+
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user || (await user.correctPassword(password, user.password)))
+    return next(new AppError(`Enter correct email or password`, 401));
+
+  const token = signToken(user._id);
+
+  res.status(200).json({
+    status: "success",
+    token,
   });
 });
