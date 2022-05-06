@@ -1,11 +1,8 @@
 const jwt = require("jsonwebtoken");
-const User = require("./.././Models/userModel");
-const AppError = require("./../utils/appError");
+const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
 
-//! Token function
-
-const signUpToken = (id) => {
+const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
@@ -20,7 +17,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     confirmPassword: req.body.confirmPassword,
   });
 
-  const token = signUpToken(newUser._id);
+  const token = signToken(newUser._id);
 
   res.status(201).json({
     status: "success",
@@ -44,7 +41,7 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user || (await user.correctPassword(password, user.password)))
     return next(new AppError(`Enter correct email or password`, 401));
 
-  const token = signUpToken(user._id);
+  const token = signToken(user._id);
 
   res.status(200).json({
     status: "success",

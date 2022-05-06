@@ -1,17 +1,17 @@
-const User = require("./../Models/userModel");
+const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
-//! Get all tours method;
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  // * Object containing all the functions from the ApiFeature Class
-
+//! get all Users method;
+exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
 
+  console.log(users);
+
+  // SEND RESPONSE
   res.status(200).json({
     status: "success",
-
-    result: users.length,
+    results: users.length,
     data: {
       users,
     },
@@ -19,62 +19,33 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 });
 
 //! Get specific tour  method;
-exports.getTour = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-
-  if (!user) return next(new AppError(`No tour found with id`, 404));
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      tour,
-    },
+exports.getUser = (req, res) => {
+  res.status(500).json({
+    status: "error",
+    message: "This route is not yet defined!",
   });
-});
+};
 
-//! Post method;
-
-exports.createTour = catchAsync(async (req, res, next) => {
-  //* awaiting the promise;
-
-  const newUser = await User.create(req.body);
-
-  res.status(201).json({
-    status: "success",
-    data: {
-      user: newUser,
-    },
+//! Get specific user
+exports.createUser = (req, res) => {
+  res.status(500).json({
+    status: "error",
+    message: "This route is not yet defined!",
   });
-});
+};
 
-//! Update tour method;
-
-exports.updateUser = catchAsync(async (req, res, next) => {
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-
-    runValidators: true,
+//! Upadate User
+exports.updateUser = (req, res) => {
+  res.status(500).json({
+    status: "error",
+    message: "This route is not yet defined!",
   });
+};
 
-  if (!user) return next(new AppError(`Cannot update user`, 404));
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      user,
-    },
+//! DElete USer
+exports.deleteUser = (req, res) => {
+  res.status(500).json({
+    status: "error",
+    message: "This route is not yet defined!",
   });
-});
-
-//!  Delete Tour method;
-
-exports.deleteUser = catchAsync(async (req, res, next) => {
-  const user = User.findByIdAndDelete(req.params.id);
-
-  if (!user) return next(new AppError(`No tour found with id`, 404));
-
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
-});
+};

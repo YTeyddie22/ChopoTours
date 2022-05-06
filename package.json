@@ -2,9 +2,9 @@
   "name": "tours",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": " development ",
+    "start": "nodemon development ",
     "start:prod": "production "
   },
   "author": "Teddy Yongo",
@@ -29,7 +29,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.27.1",
     "ndb": "^1.1.5",
-    "prettier": "^2.5.1",
-    "supervisor": "^0.12.0"
+    "nodemon": "^2.0.16",
+    "prettier": "^2.5.1"
   }
 }

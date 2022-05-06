@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please tell us your name!"],
+    required: [true, "Please Fill in your name!"],
   },
   email: {
     type: String,
@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+//* Introducing Pre-save to get the hashed password before it is saved
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -47,10 +48,10 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.methods.correctPassword = async(function (password, userPassword) {
+//* Introducing an instantiated method.
+userSchema.methods.correctPassword = async function (password, userPassword) {
   return await bcrypt.compare(password, userPassword);
-});
+};
 
-const Users = mongoose.model("User", userSchema);
-
-module.exports = Users;
+const User = mongoose.model("User", userSchema);
+module.exports = User;
