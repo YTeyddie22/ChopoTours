@@ -9,7 +9,7 @@ const {
 } = require("./../Controllers/usersController");
 
 //* Router for authentication and login
-const { signup } = require("./../Controllers/authController");
+const { signup, login } = require("./../Controllers/authController");
 
 //!Users
 
