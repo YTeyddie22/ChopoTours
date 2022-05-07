@@ -8,7 +8,7 @@ const signToken = (id) => {
   });
 };
 //! SignUp function
-exports.signup = catchAsync(async (req, res, next) => {
+exports.signup = catchAsync(async function (req, res, next) {
   //* Signing up a new user
   const newUser = await User.create({
     name: req.body.name,
@@ -16,6 +16,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
   });
+
+  console.log(newUser);
 
   const token = signToken(newUser._id);
 
