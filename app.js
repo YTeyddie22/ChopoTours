@@ -1,6 +1,5 @@
 const express = require("express");
 const morgan = require("morgan");
-const bodyParser = require("body-parser");
 
 const app = express();
 
@@ -18,10 +17,10 @@ if (process.env.NODE_ENV === "development") {
 
   app.use(express.json());
 
+  // ESLINT error when we write  `S{__dirname/public}`
   app.use(express.static(`${__dirname}/public`));
 }
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
+
 //* Routing middleware
 
 app.use("/api/v1/tours", toursRouter);
