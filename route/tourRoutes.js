@@ -11,6 +11,8 @@ const {
   getMonthlyPlan,
 } = require("./../Controllers/tourController");
 
+const { protect } = require("./../Controllers/authController");
+
 //! Checking the Routes;
 const router = express.Router();
 
@@ -25,7 +27,7 @@ router.route("/monthly-plan/:year").get(getMonthlyPlan);
 
 //! Creating a body middleware;
 //* Get and Post
-router.route("/").get(getAllTours).post(createTour);
+router.route("/").get(protect, getAllTours).post(createTour);
 
 //* Patch,Update,Delete
 router.route("/:id").patch(updateTours).get(getTour).delete(deleteTours);
