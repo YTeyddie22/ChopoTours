@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
 const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
@@ -55,9 +56,9 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
+  //*1 Get token and check if it is present
   let token;
 
-  //* Auth from postman.
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -70,6 +71,14 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError(`You are not logged in. Confirm Passwords are the same`, 401)
     );
   }
+
+  //* 2 Verifying the token.
+
+  //TODO
+  const decoder = await promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET
+  ).console.log(decoder);
 
   next();
 });
