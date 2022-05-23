@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon development ",
-    "start:prod": "production "
+    "start:prod": "nodemon production "
   },
   "author": "Teddy Yongo",
   "license": "ISC",

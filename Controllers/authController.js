@@ -1,13 +1,17 @@
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
 const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
+
+//* JWT sign function.
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
+
 //! SignUp function
 exports.signup = catchAsync(async function (req, res, next) {
   //* Signing up a new user
@@ -34,14 +38,12 @@ exports.signup = catchAsync(async function (req, res, next) {
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  console.log(email, password);
   if (!email || !password)
     return next(new AppError(`Enter both password and email`, 400));
 
   const user = await User.findOne({ email }).select("+password");
 
-  console.log(user);
-
+  //* Check the !correct password for the user.
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError(`Enter correct email or password`, 401));
 
@@ -54,7 +56,9 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
+  //*1 Get token and check if it is present
   let token;
+
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -62,12 +66,19 @@ exports.protect = catchAsync(async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
   }
 
-  console.log(token);
   if (!token) {
     return next(
       new AppError(`You are not logged in. Confirm Passwords are the same`, 401)
     );
   }
+
+  //* 2 Verifying the token.
+
+  //TODO
+  const decoder = await promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET
+  ).console.log(decoder);
 
   next();
 });

@@ -8,9 +8,9 @@ const sendCastErrorDB = (err) => {
 
 //* MongoDB error Handler
 const handleDuplicateFieldsDB = (err) => {
-  const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
 
-  console.log(value);
+  console.log(err);
 
   const message = `Duplicate field value: ${value}. Please use another value!`;
   return new AppError(message, 400);
@@ -24,14 +24,21 @@ const sendValidationErrDB = (err) => {
   return new AppError(message, 400);
 };
 
+//* JsonTokenError
+
+const handleJsonTokenError = () =>
+  new AppError("Invalid Token Signature, Please login Again", 401);
+
+//*Expired Json Token
+const handleExpiredTokenError = () =>
+  new AppError("Token Expired, Please login Again", 401);
+
 //! Error function in development
 
 const sendErrorDev = (err, res) => {
-  const errObject = { ...err };
-  errObject.errmsg = err.message;
   res.status(err.statusCode).json({
     status: err.status,
-    error: errObject,
+    error: err,
     message: err.message,
     stack: err.stack,
   });
@@ -41,13 +48,11 @@ const sendErrorDev = (err, res) => {
 
 const sendErrorProd = (err, res) => {
   //? For The Client invalidation
-  const errObject = { ...err };
-  errObject.errmsg = err.message;
 
   if (err.isOperational) {
     res.status(err.statusCode).json({
       status: err.status,
-      message: err.errmsg,
+      message: err.message,
     });
   } else {
     // 1) Log error
@@ -64,22 +69,23 @@ const sendErrorProd = (err, res) => {
 //* Exporting the Errors either in production || development mode
 
 module.exports = (err, req, res, next) => {
-  //? Development ||| Production
+  //? Development || Production
+
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
   if (process.env.NODE_ENV === "development") {
-    console.log(err);
-
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
+    //* Message Formats
+
     let error = { ...err };
 
-    console.log(error);
-    //* Message Formats
     if (err.name === "CastError") error = sendCastErrorDB(error);
-    /*  if (error.code === 11000) error = handleDuplicateFieldsDB(error); */
-    /* if (err.name === "ValidationError") error = sendValidationErrDB(error); */
+    if (err.code === 11000) error = handleDuplicateFieldsDB(error);
+    if (err.name === "ValidationError") error = sendValidationErrDB(error);
+    if (err.name === "JsonWebTokenError") error = handleJsonTokenError();
+    if (err.name === "TokenExpiredError") error = handleExpiredTokenError();
 
     sendErrorProd(error, res);
   }
