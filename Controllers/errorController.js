@@ -8,12 +8,11 @@ function sendCastErrorDB(err) {
 
 //* MongoDB error Handler
 function handleDuplicateFieldsDB(err) {
-  /* const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
+  console.log(err);
+  const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
 
   const message = `Duplicate field value: ${value}. Please use another value!`;
-  return new AppError(message, 400); */
-
-  console.log(err);
+  return new AppError(message, 400);
 }
 
 //* Mongoose Error Validation.
@@ -27,7 +26,6 @@ function sendValidationErrDB(err) {
 //* JsonTokenError
 
 function handleJsonTokenError() {
-  console.log("Found Error");
   return new AppError("Invalid Token Signature, Please login Again", 401);
 }
 //*Expired Json Token
@@ -40,7 +38,7 @@ function handleExpiredTokenError() {
 const sendErrorDev = (err, res) => {
   const { status, message, stack, statusCode } = err;
 
-  let errorObj = { errmsg: err.message, ...err };
+  let errorObj = { errmsg: message, ...err };
 
   res.status(statusCode).json({
     status: status,
@@ -55,10 +53,14 @@ const sendErrorDev = (err, res) => {
 const sendErrorProd = (err, res) => {
   //? For The Client invalidation
 
+  const { status, message, stack, statusCode } = err;
+
+  let errorObj = { errmsg: message, ...err };
+
   if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
+    res.status(statusCode).json({
+      status: status,
+      message: message,
     });
   } else {
     // 1) Log error
@@ -85,12 +87,12 @@ module.exports = (err, req, res, next) => {
   } else if (process.env.NODE_ENV === "production") {
     //* Message Formats
 
-    let error = { ...err };
+    let error = Object.create(err);
 
     if (error.name === "CastError") error = sendCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
     if (error.name === "ValidationError") error = sendValidationErrDB(error);
-    if (error.name === "JsonWebTokenError") error = handleJsonTokenError();
+    if (error.name === "JsonWebTokenError") error = handleJsonTokenError(error);
     if (error.name === "TokenExpiredError") error = handleExpiredTokenError();
 
     sendErrorProd(error, res);
