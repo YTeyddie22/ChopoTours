@@ -1,46 +1,52 @@
 const AppError = require("./../utils/appError");
 
 //* Cast Error Message
-const sendCastErrorDB = (err) => {
+function sendCastErrorDB(err) {
   const message = `Invalid ${err.path}: ${err.value}.`;
   return new AppError(message, 400);
-};
+}
 
 //* MongoDB error Handler
-const handleDuplicateFieldsDB = (err) => {
-  const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
-
-  console.log(err);
+function handleDuplicateFieldsDB(err) {
+  /* const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
 
   const message = `Duplicate field value: ${value}. Please use another value!`;
-  return new AppError(message, 400);
-};
+  return new AppError(message, 400); */
+
+  console.log(err);
+}
 
 //* Mongoose Error Validation.
-const sendValidationErrDB = (err) => {
+function sendValidationErrDB(err) {
   const errors = Object.values(err.errors).map((el) => el.message);
   const message = `Invalid data input. ${errors.join(". ")}`;
 
   return new AppError(message, 400);
-};
+}
 
 //* JsonTokenError
 
-const handleJsonTokenError = () =>
-  new AppError("Invalid Token Signature, Please login Again", 401);
-
+function handleJsonTokenError() {
+  console.log("Found Error");
+  return new AppError("Invalid Token Signature, Please login Again", 401);
+}
 //*Expired Json Token
-const handleExpiredTokenError = () =>
-  new AppError("Token Expired, Please login Again", 401);
+function handleExpiredTokenError() {
+  return new AppError("Token Expired, Please login Again", 401);
+}
 
 //! Error function in development
 
 const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack,
+  const { status, message, stack, statusCode } = err;
+
+  let errorObj = { errmsg: err.message, ...err };
+
+  res.status(statusCode).json({
+    status: status,
+    error: errorObj,
+    message: message,
+    stack: stack,
   });
 };
 
@@ -81,11 +87,11 @@ module.exports = (err, req, res, next) => {
 
     let error = { ...err };
 
-    if (err.name === "CastError") error = sendCastErrorDB(error);
-    if (err.code === 11000) error = handleDuplicateFieldsDB(error);
-    if (err.name === "ValidationError") error = sendValidationErrDB(error);
-    if (err.name === "JsonWebTokenError") error = handleJsonTokenError();
-    if (err.name === "TokenExpiredError") error = handleExpiredTokenError();
+    if (error.name === "CastError") error = sendCastErrorDB(error);
+    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
+    if (error.name === "ValidationError") error = sendValidationErrDB(error);
+    if (error.name === "JsonWebTokenError") error = handleJsonTokenError();
+    if (error.name === "TokenExpiredError") error = handleExpiredTokenError();
 
     sendErrorProd(error, res);
   }

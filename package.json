@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon development ",
-    "start:prod": "nodemon production "
+    "start": "nodemon server.js ",
+    "start:prod": "NODE_ENV=production nodemon server.js",
+    "debug": "ndb server.js"
   },
   "author": "Teddy Yongo",
   "license": "ISC",
