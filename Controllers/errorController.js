@@ -8,7 +8,6 @@ function sendCastErrorDB(err) {
 
 //* MongoDB error Handler
 function handleDuplicateFieldsDB(err) {
-  console.log(err);
   const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
 
   const message = `Duplicate field value: ${value}. Please use another value!`;
@@ -28,6 +27,7 @@ function sendValidationErrDB(err) {
 function handleJsonTokenError() {
   return new AppError("Invalid Token Signature, Please login Again", 401);
 }
+
 //*Expired Json Token
 function handleExpiredTokenError() {
   return new AppError("Token Expired, Please login Again", 401);
@@ -53,9 +53,7 @@ const sendErrorDev = (err, res) => {
 const sendErrorProd = (err, res) => {
   //? For The Client invalidation
 
-  const { status, message, stack, statusCode } = err;
-
-  let errorObj = { errmsg: message, ...err };
+  const { status, message, statusCode } = err;
 
   if (err.isOperational) {
     res.status(statusCode).json({

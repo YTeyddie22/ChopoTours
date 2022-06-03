@@ -79,5 +79,13 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   console.log(decoder);
 
+  //*3 Check if the user still exists in the app or changed password.
+
+  const decodeUserId = await User.findById(decoder.id);
+
+  if (!decodeUserId) {
+    return next(new AppError("The user by this ID no longer exists", 401));
+  }
+
   next();
 });
