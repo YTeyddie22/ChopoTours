@@ -33,6 +33,8 @@ const userSchema = new mongoose.Schema({
       message: "Passwords are not the same!",
     },
   },
+
+  passwordChangedAt: Date,
 });
 
 //* Introducing Pre-save to get the hashed password before it is saved
@@ -48,9 +50,23 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-//* Introducing an instantiated method.
+//*1 Introducing an instantiated method.
 userSchema.methods.correctPassword = async function (password, userPassword) {
   return await bcrypt.compare(password, userPassword);
+};
+
+//*2 Checking the time password was changed.
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimeStamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    console.log(changedTimeStamp, JWTTimestamp);
+    return JWTTimestamp < changedTimeStamp;
+  }
+  return false;
 };
 
 const User = mongoose.model("User", userSchema);
