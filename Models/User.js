@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const moment = require("moment");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -34,7 +35,10 @@ const userSchema = new mongoose.Schema({
     },
   },
 
-  passwordChangedAt: Date,
+  passwordChangedAt: {
+    type: Date,
+    default: moment().format("MMM Do YY"),
+  },
 });
 
 //* Introducing Pre-save to get the hashed password before it is saved
@@ -57,6 +61,7 @@ userSchema.methods.correctPassword = async function (password, userPassword) {
 
 //*2 Checking the time password was changed.
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  console.log(this.passwordChangedAt);
   if (this.passwordChangedAt) {
     const changedTimeStamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
