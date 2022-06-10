@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const moment = require("moment");
+
 const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema({
@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema({
     required: [true, "everyone has a role to play"],
     enum: {
       values: ["user", "admin", "guide", "lead-guide"],
-      message: "Can be user, admin, lead-guide, or guide",
     },
+    default: "user",
   },
   photo: String,
 
