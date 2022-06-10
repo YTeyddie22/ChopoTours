@@ -107,3 +107,25 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+//* Forgetting password and sending it to email address
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  //? 1 Get the user based on posted email address
+
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return next(new AppError("There is no user of the email address!", 404));
+  }
+
+  //? 2. Generate token from model.
+
+  const resetToken = user.createPasswordResetToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  //? 3. Send token to email address
+});
+
+exports.resetPassword = () => {};
