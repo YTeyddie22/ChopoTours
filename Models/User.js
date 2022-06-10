@@ -15,10 +15,15 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, "Please provide a valid email"],
   },
+
+  //TODO: There are somethings to be done as the role !working when deleting in postman.
   role: {
     type: String,
-    enum: ["user", "admin", "guide", "lead-guide"],
-    default: "user",
+    required: [true, "everyone has a role to play"],
+    enum: {
+      values: ["user", "admin", "guide", "lead-guide"],
+      message: "Can be user, admin, lead-guide, or guide",
+    },
   },
   photo: String,
 
