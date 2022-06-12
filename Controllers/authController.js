@@ -15,6 +15,7 @@ const signToken = (id) => {
 //! SignUp function
 exports.signup = catchAsync(async function (req, res, next) {
   //* Signing up a new user
+
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -98,6 +99,8 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   next();
 });
+
+//* Authorization to some functionality.
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {

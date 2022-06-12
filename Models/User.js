@@ -20,12 +20,11 @@ const userSchema = new mongoose.Schema({
   //TODO: There are somethings to be done as the role !working when deleting in postman.
   role: {
     type: String,
-    required: [true, "everyone has a role to play"],
-    enum: {
-      values: ["user", "admin", "guide", "lead-guide"],
-    },
+    enum: ["admin", "lead-guide", "guide", "user"],
+    strict: false,
     default: "user",
   },
+
   photo: String,
 
   password: {
