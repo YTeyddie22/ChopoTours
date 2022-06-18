@@ -28,7 +28,7 @@ router.post("/login", login);
 
 //* Routes for forgetting password and resetting via email.
 router.post("/forgotpassword", forgotPassword);
-router.post("/resetpassword", resetPassword);
+router.patch("/resetpassword/:token", resetPassword);
 
 router.route("/").get(getAllUsers).post(createUser);
 router.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
