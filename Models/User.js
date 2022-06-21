@@ -61,7 +61,7 @@ const userSchema = new mongoose.Schema(
   { strict: false }
 );
 
-//* Introducing Pre-save to get the hashed password before it is saved
+//*1 Introducing Pre-save to get the hashed password before it is saved
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -71,6 +71,14 @@ userSchema.pre("save", async function (next) {
   //* Remove the confirm Field
   this.confirmPassword = undefined;
 
+  next();
+});
+
+//*2 Having pre-save for the password and the time it was changed;
+
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
+  this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
