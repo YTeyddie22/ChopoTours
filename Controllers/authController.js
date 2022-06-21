@@ -49,7 +49,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   //* Check the !correct password for the user.
   if (!user || !(await user.correctPassword(password, user.password)))
-    return next(new AppError(`Enter correct email or password`, 401));
+    return next(new AppError(` Incorrect email or password`, 401));
 
   const token = signToken(user._id);
 
@@ -167,19 +167,21 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   //*1 Get the user based on token;
-  const hashedPassword = crypto
+  const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
     .digest("hex");
 
   const user = await User.findOne({
-    passwordResetToken: hashedPassword,
+    passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
   });
 
   //*2 Set new password only if there is a user and the token is not expired;
 
-  if (!user) return next(new AppError("The Token is invalid", 400));
+  if (!user) {
+    return next(new AppError("The Token is invalid or expired", 400));
+  }
 
   user.password = req.body.password;
   user.confirmPassword = req.body.confirmPassword;

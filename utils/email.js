@@ -15,10 +15,10 @@ const sendEmail = async (options) => {
   //*2 Create an email option.
 
   const mailOptions = {
-    from: "Teddy Yongo <test1@teddy.com>",
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
+    from: `Teddy Yongo <${options.email}>`,
+    to: `${options.email}`,
+    subject: `${options.subject}`,
+    text: options.responseMessage,
   };
 
   //*3 Send Email.

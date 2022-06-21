@@ -4,62 +4,59 @@ const bcrypt = require("bcryptjs");
 
 const crypto = require("crypto");
 
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: [true, "Please Fill in your name!"],
-    },
-    email: {
-      type: String,
-      required: [true, "Please provide your email"],
-      unique: true,
-      lowercase: true,
-      validate: [validator.isEmail, "Please provide a valid email"],
-    },
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "Please Fill in your name!"],
+  },
+  email: {
+    type: String,
+    required: [true, "Please provide your email"],
+    unique: true,
+    lowercase: true,
+    validate: [validator.isEmail, "Please provide a valid email"],
+  },
 
-    //TODO: There are somethings to be done as the role !working when deleting in postman.
-    role: {
-      type: String,
-      enum: ["admin", "lead-guide", "guide", "user"],
+  //TODO: There are somethings to be done as the role !working when deleting in postman.
+  role: {
+    type: String,
+    enum: ["admin", "lead-guide", "guide", "user"],
 
-      default: "user",
-    },
+    default: "user",
+  },
 
-    photo: String,
+  photo: String,
 
-    password: {
-      type: String,
-      required: [true, "Please provide a password"],
-      minlength: 8,
-      select: false,
-    },
-    confirmPassword: {
-      type: String,
-      required: [true, "Please confirm your password"],
-      validate: {
-        //* This only works on CREATE and SAVE!!!
-        validator: function (el) {
-          return el === this.password;
-        },
-        message: "Passwords are not the same!",
+  password: {
+    type: String,
+    required: [true, "Please provide a password"],
+    minlength: 8,
+    select: false,
+  },
+  confirmPassword: {
+    type: String,
+    required: [true, "Please confirm your password"],
+    validate: {
+      //* This only works on CREATE and SAVE!!!
+      validator: function (el) {
+        return el === this.password;
       },
-    },
-
-    passwordChangedAt: {
-      type: Date,
-      default: Date,
-    },
-
-    passwordResetToken: String,
-
-    passwordResetExpires: {
-      type: Date,
-      default: Date,
+      message: "Passwords are not the same!",
     },
   },
-  { strict: false }
-);
+
+  passwordChangedAt: {
+    type: Date,
+    default: Date,
+  },
+
+  passwordResetToken: String,
+
+  passwordResetExpires: {
+    type: Date,
+    default: Date,
+  },
+});
 
 //*1 Introducing Pre-save to get the hashed password before it is saved
 userSchema.pre("save", async function (next) {
