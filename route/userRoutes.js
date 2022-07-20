@@ -14,6 +14,8 @@ const {
   login,
   forgotPassword,
   resetPassword,
+  protect,
+  updatePassword,
 } = require("./../Controllers/authController");
 
 //!Users
@@ -29,7 +31,9 @@ router.post("/login", login);
 //* Routes for forgetting password and resetting via email.
 router.post("/forgotpassword", forgotPassword);
 router.patch("/resetpassword/:token", resetPassword);
+router.patch("/updateMyPassword", protect, updatePassword);
 
+//* Router for the user;
 router.route("/").get(getAllUsers).post(createUser);
 router.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
 
