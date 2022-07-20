@@ -14,6 +14,20 @@ const signToken = (id) => {
   });
 };
 
+//? Refactored signToken;
+
+const createSignedToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+
+  res.status(statusCode).json({
+    status: "success",
+    token,
+    data: {
+      user,
+    },
+  });
+};
+
 //! SignUp function
 exports.signup = catchAsync(async function (req, res, next) {
   //* Signing up a new user
@@ -26,15 +40,7 @@ exports.signup = catchAsync(async function (req, res, next) {
     role: req.body.role,
   });
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: "success",
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  createSignedToken(newUser, 201, res);
 });
 
 //! for Logging in
@@ -51,14 +57,10 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError(` Incorrect email or password`, 401));
 
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: "success",
-    token,
-  });
+  createSignedToken(user, 200, res);
 });
 
+//! Protecting the password data
 exports.protect = catchAsync(async (req, res, next) => {
   //*1 Get token and check if it is present
   let token;
@@ -165,6 +167,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
+//! Resetting the password;
+
 exports.resetPassword = catchAsync(async (req, res, next) => {
   //*1 Get the user based on token;
   const hashedToken = crypto
@@ -194,10 +198,30 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   //*4 Login the user;
 
-  const token = signToken(user._id);
+  createSignedToken(user, 200, res);
+});
 
-  res.status(200).json({
-    status: "success",
-    token,
-  });
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  //* 1  Get the user from the collection
+
+  const user = await User.findById(req.user.id).select("+password");
+
+  //* 2 Check validation of the password
+
+  if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
+    return next(new AppError("Incorrect password", 401));
+  }
+
+  //* 3 Update the password
+
+  user.password = req.body.password;
+  user.confirmPassword = req.body.confirmPassword;
+
+  await user.save();
+
+  //* 4 Send the signed token using JWT and sign in the user;
+
+  createSignedToken(user, 200, res);
+
+  console.log(user.password);
 });
