@@ -2,9 +2,7 @@ const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
-//TODO testing
-//! Function for filtering the objects;
-
+//! Normal JS Function for filtering the objects;
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
 
@@ -15,6 +13,22 @@ const filterObj = (obj, ...allowedFields) => {
 
   return newObj;
 };
+
+//! get all Users method;
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find();
+
+  console.log(users);
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    results: users.length,
+    data: {
+      users,
+    },
+  });
+});
 
 //! Update the  User data in the body;
 
@@ -52,19 +66,16 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
   });
 });
 
-//! get all Users method;
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
+//! Delete the user but not from the database;
 
-  console.log(users);
+exports.deleteUserData = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, {
+    active: false,
+  });
 
-  // SEND RESPONSE
-  res.status(200).json({
+  res.status(204).json({
     status: "success",
-    results: users.length,
-    data: {
-      users,
-    },
+    data: null,
   });
 });
 

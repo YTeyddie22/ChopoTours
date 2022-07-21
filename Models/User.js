@@ -50,6 +50,12 @@ const userSchema = new mongoose.Schema({
   passwordResetToken: String,
 
   passwordResetExpires: Date,
+
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 //*1 Introducing Pre-save to get the hashed password before it is saved
@@ -70,6 +76,13 @@ userSchema.pre("save", async function (next) {
 userSchema.pre("save", function (next) {
   if (!this.isModified("password") || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+//* 2. Deleting the user data without deleting the data from database;
+
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
   next();
 });
 
