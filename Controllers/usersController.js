@@ -2,8 +2,7 @@ const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
-//! Function for filtering the objects;
-
+//! Normal JS Function for filtering the objects;
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
 
@@ -15,9 +14,25 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
+//! get all Users method;
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find();
+
+  console.log(users);
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    results: users.length,
+    data: {
+      users,
+    },
+  });
+});
+
 //! Update the  User data in the body;
 
-exports.updateMe = catchAsync(async (req, res, next) => {
+exports.updateUserData = catchAsync(async (req, res, next) => {
   //* 1. Create an error incase the user tries to update the password;
 
   if (req.body.password || req.body.confirmPassword) {
@@ -35,7 +50,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   //* 2. Update the user document;
 
   const updatedUser = await User.findByIdAndUpdate(
-    req.body.id,
+    req.user.id,
     filteredObjects,
     {
       new: true,
@@ -43,7 +58,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     }
   );
 
-  res.status(201).json({
+  res.status(200).json({
     status: "success",
     data: {
       user: updatedUser,
@@ -51,19 +66,16 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-//! get all Users method;
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
+//! Delete the user but not from the database;
 
-  console.log(users);
+exports.deleteUserData = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, {
+    active: false,
+  });
 
-  // SEND RESPONSE
-  res.status(200).json({
+  res.status(204).json({
     status: "success",
-    results: users.length,
-    data: {
-      users,
-    },
+    data: null,
   });
 });
 

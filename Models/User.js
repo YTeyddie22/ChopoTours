@@ -45,16 +45,16 @@ const userSchema = new mongoose.Schema({
     },
   },
 
-  passwordChangedAt: {
-    type: Date,
-    default: Date,
-  },
+  passwordChangedAt: Date,
 
   passwordResetToken: String,
 
-  passwordResetExpires: {
-    type: Date,
-    default: Date,
+  passwordResetExpires: Date,
+
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
   },
 });
 
@@ -76,6 +76,13 @@ userSchema.pre("save", async function (next) {
 userSchema.pre("save", function (next) {
   if (!this.isModified("password") || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+//* 2. Deleting the user data without deleting the data from database;
+
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
   next();
 });
 
