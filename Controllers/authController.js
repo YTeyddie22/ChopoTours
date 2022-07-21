@@ -6,7 +6,7 @@ const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const sendMail = require("./../utils/email");
 
-//* JWT sign function.
+//* Refactored JWT sign function.
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -18,6 +18,23 @@ const signToken = (id) => {
 
 const createSignedToken = (user, statusCode, res) => {
   const token = signToken(user._id);
+
+  //* Setting the cookie options
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+
+  //*CHecking the environment to secure the cookie;
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+
+  //* Init a cookie;
+  res.cookie("jwt", token, cookieOptions);
+
+  //* Removing the password from being seen in body
+  user.password = undefined;
 
   res.status(statusCode).json({
     status: "success",
