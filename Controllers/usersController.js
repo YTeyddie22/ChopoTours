@@ -2,6 +2,7 @@ const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
+//TODO testing
 //! Function for filtering the objects;
 
 const filterObj = (obj, ...allowedFields) => {
@@ -17,7 +18,7 @@ const filterObj = (obj, ...allowedFields) => {
 
 //! Update the  User data in the body;
 
-exports.updateMe = catchAsync(async (req, res, next) => {
+exports.updateUserData = catchAsync(async (req, res, next) => {
   //* 1. Create an error incase the user tries to update the password;
 
   if (req.body.password || req.body.confirmPassword) {
@@ -35,7 +36,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   //* 2. Update the user document;
 
   const updatedUser = await User.findByIdAndUpdate(
-    req.body.id,
+    req.user.id,
     filteredObjects,
     {
       new: true,
@@ -43,7 +44,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     }
   );
 
-  res.status(201).json({
+  res.status(200).json({
     status: "success",
     data: {
       user: updatedUser,

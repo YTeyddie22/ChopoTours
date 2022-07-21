@@ -45,17 +45,11 @@ const userSchema = new mongoose.Schema({
     },
   },
 
-  passwordChangedAt: {
-    type: Date,
-    default: Date,
-  },
+  passwordChangedAt: Date,
 
   passwordResetToken: String,
 
-  passwordResetExpires: {
-    type: Date,
-    default: Date,
-  },
+  passwordResetExpires: Date,
 });
 
 //*1 Introducing Pre-save to get the hashed password before it is saved
