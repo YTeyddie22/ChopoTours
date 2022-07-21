@@ -38,7 +38,7 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.confirmPassword) {
     return next(
       new AppError(
-        "You are trying to update data of password from the wrong place Friend",
+        "You are trying to update password from the wrong place Friend",
         400
       )
     );
