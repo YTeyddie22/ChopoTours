@@ -1,7 +1,6 @@
 //? Packages
 const express = require("express");
 const morgan = require("morgan");
-const bodyParser = require("body-parser");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 
@@ -24,7 +23,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-//* Prevents too many requests.
+//! Prevents too many requests.
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
