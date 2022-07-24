@@ -3,6 +3,8 @@ const express = require("express");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
 
 const app = express();
 
@@ -31,14 +33,24 @@ const limiter = rateLimit({
 });
 
 app.use("/api", limiter);
-//* Routing middleware
 
-//! bodyParsing Middleware;
+//! BodyParsing Middleware;
 
 app.use(express.json({ limit: "10kb" }));
-// ESLINT error when we write  `S{__dirname/public}`
+
+//! Implement sanitization in the body;
+
+//* Against NOSQL injection
+app.use(mongoSanitize());
+
+//*Against Xss;
+app.use(xss());
+
+//! ESLINT error when we write  `S{__dirname/public}`
+//* For a static web
 app.use(express.static(`${__dirname}/public`));
 
+//! Routing middleware
 app.use("/api/v1/tours", toursRouter);
 app.use("/api/v1/users", userRouter);
 
