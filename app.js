@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const rateLimit = require("express-rate-limit");
 
 const app = express();
 
@@ -21,6 +22,14 @@ if (process.env.NODE_ENV === "development") {
   app.use(express.static(`${__dirname}/public`));
 }
 
+//* Prevents too many requests.
+const limiter = rateLimit({
+  max: 3,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many requests from this IP. Try again after a while",
+});
+
+app.use("/api", limiter);
 //* Routing middleware
 
 app.use(bodyParser.json()); // for parsing application/json
