@@ -5,6 +5,7 @@ const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
+const hpp = require("hpp");
 
 const app = express();
 
@@ -45,6 +46,21 @@ app.use(mongoSanitize());
 
 //*Against Xss;
 app.use(xss());
+
+//* Against parameter pollution;
+
+app.use(
+  hpp({
+    whitelist: [
+      "duration",
+      "ratingsQuantity",
+      "ratingsAverage",
+      "maxGroupSize",
+      "difficulty",
+      "price",
+    ],
+  })
+);
 
 //! ESLINT error when we write  `S{__dirname/public}`
 //* For a static web
