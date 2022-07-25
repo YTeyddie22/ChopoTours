@@ -11,9 +11,7 @@ dotEnv.config({
 
 //* Reads the JSON FILE and parses to an object
 
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, "utf-8")
-);
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, "utf-8"));
 
 //* Database password
 const DB = process.env.DATABASE.replace(
@@ -24,8 +22,7 @@ const DB = process.env.DATABASE.replace(
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
+    useUnifiedTopology: true,
   })
   .then(() => console.log("Connected to DB"))
   .catch((err) => console.log(`Error: ${err}`));
