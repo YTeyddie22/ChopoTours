@@ -1,6 +1,10 @@
+//! Packages
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 
+//!Modules;
+
+const User = require("./User");
 //Modified Schema
 const tourSchema = new mongoose.Schema(
   {
@@ -105,6 +109,8 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
+
+    guides: Array,
   },
   {
     toJSON: { virtuals: true },
@@ -125,6 +131,15 @@ tourSchema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
+
+//! Adding a save middleware for embedding data;
+/*
+tourSchema.pre("save", async function (next) {
+  const guidePromise = this.guides.map(async (id) => await User.findById(id));
+  this.guides = await Promise.all(guidePromise);
+  next();
+});
+*/
 
 ////////////////////////////////////////////////////////////
 
