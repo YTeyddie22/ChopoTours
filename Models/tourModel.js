@@ -2,9 +2,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 
-//!Modules;
-
-const User = require("./User");
 //Modified Schema
 const tourSchema = new mongoose.Schema(
   {
@@ -110,7 +107,12 @@ const tourSchema = new mongoose.Schema(
       },
     ],
 
-    guides: Array,
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -143,14 +145,29 @@ tourSchema.pre("save", async function (next) {
 
 ////////////////////////////////////////////////////////////
 
-//TODO Query Middleware
+//! Query Middlewares
 
+//! Populating the guides data;
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "guides",
+    select: "-__v -passwordChangedAt",
+  });
+  next();
+});
+
+//* Tour that is not a secret tour
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
 
   this.start = Date.now();
   next();
 });
+
+//////////////////////////////////////////////////////////
+
+//! query middleware for post data;
 
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds!`);
@@ -161,6 +178,7 @@ tourSchema.post(/^find/, function (docs, next) {
 
 //!Aggregate schema with a middleWare from mongoose
 
+//* Remove tour that doesn't match;
 tourSchema.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { $ne: true } });
   next();
