@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+//! Schema for the model;
 const reviewSchema = new mongoose.Schema(
   {
     reviews: {
@@ -33,6 +34,7 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+//! Creating the model;
 const Review = mongoose.model("Reviews", reviewSchema);
 
 module.exports = Review;
