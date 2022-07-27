@@ -1,21 +1,21 @@
 const mongoose = require("mongoose");
 
-const ReviewSchema = new mongoose.Schema(
+const reviewSchema = new mongoose.Schema(
   {
     reviews: {
       type: String,
       required: [true, "Review cannot be empty"],
     },
-    ratings: {
+    rating: {
       type: Number,
       min: 1,
       max: 5,
     },
     createdAt: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
-    tours: {
+    tour: {
       type: mongoose.Schema.ObjectId,
       ref: "Tour",
       required: [true, "All tours must have a review"],
@@ -33,6 +33,6 @@ const ReviewSchema = new mongoose.Schema(
   }
 );
 
-const reviewModel = mongoose.model("Reviews", ReviewSchema);
+const Review = mongoose.model("Reviews", reviewSchema);
 
-module.export = reviewModel;
+module.exports = Review;

@@ -126,7 +126,9 @@ exports.protect = catchAsync(async (req, res, next) => {
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return next(new AppError("You do not have permission to delete!! ", 403));
+      return next(
+        new AppError("You do not have permission for this operation ", 403)
+      );
     }
     next();
   };
