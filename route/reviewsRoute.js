@@ -3,7 +3,9 @@ const express = require("express");
 const {
   getAllReviews,
   createReview,
+  updateReview,
   deleteReview,
+  setTourUserIds,
 } = require("../Controllers/reviewsController");
 
 const { protect, restrictTo } = require("../Controllers/authController");
@@ -16,8 +18,8 @@ const reviewRouter = express.Router({
 reviewRouter
   .route("/")
   .get(getAllReviews)
-  .post(protect, restrictTo("user"), createReview);
+  .post(protect, restrictTo("user"), setTourUserIds, createReview);
 
-reviewRouter.route("/:id").delete(deleteReview);
+reviewRouter.route("/:id").patch(updateReview).delete(deleteReview);
 
 module.exports = reviewRouter;
