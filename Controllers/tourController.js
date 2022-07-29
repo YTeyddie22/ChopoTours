@@ -3,7 +3,7 @@ const Tour = require("./../Models/tourModel");
 const ApiFeatures = require("./../utils/apiFeatures.js");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
-const { deleteOne } = require("./factoryHandler");
+const { deleteOne, updateOne, createOne } = require("./factoryHandler");
 
 //! Get aliasingTopTours
 
@@ -52,37 +52,11 @@ exports.getTour = catchAsync(async (req, res, next) => {
 
 //! Post method;
 
-exports.createTour = catchAsync(async (req, res, next) => {
-  //* awaiting the promise;
-
-  const newTour = await Tour.create(req.body);
-
-  res.status(201).json({
-    status: "success",
-    data: {
-      tour: newTour,
-    },
-  });
-});
+exports.createTour = createOne(Tour);
 
 //! Update tour method;
 
-exports.updateTours = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-
-    runValidators: true,
-  });
-
-  if (!tour) return next(new AppError(`Cannot update tour`, 404));
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      tour,
-    },
-  });
-});
+exports.updateTours = updateOne(Tour);
 
 //!  Delete Tour method;
 

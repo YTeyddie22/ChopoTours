@@ -7,7 +7,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 
-const app = express();
+//? Modules;
 
 //? Routers
 const toursRouter = require("./route/tourRoutes");
@@ -18,11 +18,13 @@ const reviewRouter = require("./route/reviewsRoute");
 const AppError = require("./utils/appError");
 const globalErrorController = require("./controllers/errorController");
 
-//! Set security Headers;
+const app = express();
 
+//! Set security Headers;
 app.use(helmet());
 
 //! Logging middleware
+//? TODO, MORGAN NOT LOGGING
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }

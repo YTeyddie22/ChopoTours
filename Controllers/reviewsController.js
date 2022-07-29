@@ -1,6 +1,6 @@
 const Review = require("../Models/Review");
 const catchAsync = require("../utils/catchAsync");
-const { deleteOne } = require("./factoryHandler");
+const { deleteOne, updateOne, createOne } = require("./factoryHandler");
 
 //! Getting all the reviews
 exports.getAllReviews = catchAsync(async function (req, res, next) {
@@ -22,19 +22,15 @@ exports.getAllReviews = catchAsync(async function (req, res, next) {
   });
 });
 
-//! Create a review per User;
-exports.createReview = catchAsync(async function (req, res, next) {
-  //* Check whether the tour and user are present;
+//! Middleware function for getting IDs
+exports.setTourUserIds = (req, res, next) => {
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user.id;
-  const newReview = await Review.create(req.body);
+  next();
+};
+//! Create a review per User;
+exports.createReview = createOne(Review);
 
-  res.status(201).json({
-    status: "success",
-    data: {
-      review: newReview,
-    },
-  });
-});
+exports.updateReview = updateOne(Review);
 
 exports.deleteReview = deleteOne(Review);
