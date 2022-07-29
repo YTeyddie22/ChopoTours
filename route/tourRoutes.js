@@ -13,8 +13,14 @@ const {
 
 const { protect, restrictTo } = require("./../Controllers/authController");
 
+const reviewRouter = require("./reviewsRoute");
+
 //! Checking the Routes;
 const router = express.Router();
+
+//*Implementing the merge routing to reviews;
+
+router.use("/:tourId/reviews", reviewRouter);
 
 //! Aliasing Router
 
