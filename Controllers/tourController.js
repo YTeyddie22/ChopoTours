@@ -3,6 +3,7 @@ const Tour = require("./../Models/tourModel");
 const ApiFeatures = require("./../utils/apiFeatures.js");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
+const { deleteOne } = require("./factoryHandler");
 
 //! Get aliasingTopTours
 
@@ -85,16 +86,7 @@ exports.updateTours = catchAsync(async (req, res, next) => {
 
 //!  Delete Tour method;
 
-exports.deleteTours = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id);
-
-  if (!tour) return next(new AppError(`No tour found with id`, 404));
-
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
-});
+exports.deleteTours = deleteOne(Tour);
 
 //! Get Tour Stats
 exports.getTourStats = catchAsync(async (req, res, next) => {

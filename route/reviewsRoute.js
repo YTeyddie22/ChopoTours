@@ -3,6 +3,7 @@ const express = require("express");
 const {
   getAllReviews,
   createReview,
+  deleteReview,
 } = require("../Controllers/reviewsController");
 
 const { protect, restrictTo } = require("../Controllers/authController");
@@ -16,5 +17,7 @@ reviewRouter
   .route("/")
   .get(getAllReviews)
   .post(protect, restrictTo("user"), createReview);
+
+reviewRouter.route("/:id").delete(deleteReview);
 
 module.exports = reviewRouter;
