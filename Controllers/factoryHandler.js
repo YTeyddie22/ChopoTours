@@ -48,3 +48,20 @@ exports.createOne = (Model) =>
       },
     });
   });
+
+//! Factory setting for getting data.
+
+exports.getOne = (Model, populateOptions) =>
+  catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.params.id);
+    if (populateOptions) query = query.populate(populateOptions);
+
+    const document = await query;
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        data: document,
+      },
+    });
+  });
