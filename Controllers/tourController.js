@@ -1,9 +1,16 @@
+//const AppError = require("./../utils/appError");
+
 const Tour = require("./../Models/tourModel");
 
-const ApiFeatures = require("./../utils/apiFeatures.js");
 const catchAsync = require("./../utils/catchAsync");
-const AppError = require("./../utils/appError");
-const { deleteOne, updateOne, createOne, getOne } = require("./factoryHandler");
+
+const {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+} = require("./factoryHandler");
 
 //! Get aliasingTopTours
 
@@ -14,42 +21,6 @@ exports.aliasingTopTours = (req, res, next) => {
 
   next();
 };
-
-//! Get all tours method;
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  // * Object containing all the functions from the ApiFeature Class
-  const features = new ApiFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitField()
-    .pagination();
-
-  const tours = await features.query;
-
-  res.status(200).json({
-    status: "success",
-
-    result: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
-
-//! Get specific tour  method;
-exports.getTour = getOne(Tour, { path: "review" });
-
-//! Post method;
-
-exports.createTour = createOne(Tour);
-
-//! Update tour method;
-
-exports.updateTours = updateOne(Tour);
-
-//!  Delete Tour method;
-
-exports.deleteTours = deleteOne(Tour);
 
 //! Get Tour Stats
 exports.getTourStats = catchAsync(async (req, res, next) => {
@@ -135,3 +106,14 @@ exports.getMonthlyPlan = catchAsync(async function (req, res, next) {
     data: plan,
   });
 });
+
+//! Get,create,update and delete tours;
+exports.getAllTours = getAll(Tour);
+
+exports.getTour = getOne(Tour, { path: "review" });
+
+exports.createTour = createOne(Tour);
+
+exports.updateTours = updateOne(Tour);
+
+exports.deleteTours = deleteOne(Tour);

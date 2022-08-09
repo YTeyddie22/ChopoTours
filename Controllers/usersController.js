@@ -1,7 +1,7 @@
 const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
-const { deleteOne, updateOne, getOne } = require("./factoryHandler");
+const { deleteOne, updateOne, getOne, getAll } = require("./factoryHandler");
 
 //! Normal JS Function for filtering the objects;
 const filterObj = (obj, ...allowedFields) => {
@@ -14,22 +14,6 @@ const filterObj = (obj, ...allowedFields) => {
 
   return newObj;
 };
-
-//! get all Users method;
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  console.log(users);
-
-  // SEND RESPONSE
-  res.status(200).json({
-    status: "success",
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
 
 //! Update the  User data in the body;
 
@@ -80,9 +64,6 @@ exports.deleteUserData = catchAsync(async (req, res, next) => {
   });
 });
 
-//! Get specific tour  method;
-exports.getUser = getOne(User);
-
 //! Get specific user
 exports.createUser = (req, res) => {
   res.status(500).json({
@@ -91,8 +72,11 @@ exports.createUser = (req, res) => {
   });
 };
 
-//! Update User
+//! Get all Users methods;
+exports.getAllUsers = getAll(User);
+
+exports.getUser = getOne(User);
+
 exports.updateUser = updateOne(User);
 
-//! Delete User Permanently
 exports.deleteUser = deleteOne(User);
