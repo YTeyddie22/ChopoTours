@@ -1,7 +1,7 @@
 const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
-const { deleteOne, updateOne } = require("./factoryHandler");
+const { deleteOne, updateOne, getOne } = require("./factoryHandler");
 
 //! Normal JS Function for filtering the objects;
 const filterObj = (obj, ...allowedFields) => {
@@ -81,18 +81,13 @@ exports.deleteUserData = catchAsync(async (req, res, next) => {
 });
 
 //! Get specific tour  method;
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
-  });
-};
+exports.getUser = getOne(User);
 
 //! Get specific user
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: "error",
-    message: "This route is not yet defined!",
+    message: "This route is not defined! Go and sign up!",
   });
 };
 

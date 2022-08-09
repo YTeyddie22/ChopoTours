@@ -37,7 +37,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 });
 
 //! Get specific tour  method;
-exports.getTour = getOne(Tour, { path: "reviews" });
+exports.getTour = getOne(Tour, { path: "review" });
 
 //! Post method;
 
