@@ -2,6 +2,7 @@ const express = require("express");
 
 const {
   getAllReviews,
+  getReview,
   createReview,
   updateReview,
   deleteReview,
@@ -20,6 +21,10 @@ reviewRouter
   .get(getAllReviews)
   .post(protect, restrictTo("user"), setTourUserIds, createReview);
 
-reviewRouter.route("/:id").patch(updateReview).delete(deleteReview);
+reviewRouter
+  .route("/:id")
+  .get(getReview)
+  .patch(updateReview)
+  .delete(deleteReview);
 
 module.exports = reviewRouter;

@@ -1,6 +1,6 @@
 const Review = require("../Models/Review");
 const catchAsync = require("../utils/catchAsync");
-const { deleteOne, updateOne, createOne } = require("./factoryHandler");
+const { deleteOne, updateOne, createOne, getOne } = require("./factoryHandler");
 
 //! Getting all the reviews
 exports.getAllReviews = catchAsync(async function (req, res, next) {
@@ -28,8 +28,10 @@ exports.setTourUserIds = (req, res, next) => {
   if (!req.body.user) req.body.user = req.user.id;
   next();
 };
-//! Create a review per User;
+//! Create, Get, Update and delete methods for reviews;
 exports.createReview = createOne(Review);
+
+exports.getReview = getOne(Review);
 
 exports.updateReview = updateOne(Review);
 

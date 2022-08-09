@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 //! Schema for the model;
 const reviewSchema = new mongoose.Schema(
   {
-    reviews: {
+    review: {
       type: String,
       required: [true, "Review cannot be empty"],
     },
