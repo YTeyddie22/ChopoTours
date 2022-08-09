@@ -58,7 +58,8 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-//*1 Introducing Pre-save to get the hashed password before it is saved
+//!1 Introducing Pre-save to get the hashed password before it is saved
+
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -71,7 +72,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-//*2 Having pre-save for the password and the time it was changed;
+//!2 Having pre-save for the password and the time it was changed;
 
 userSchema.pre("save", function (next) {
   if (!this.isModified("password") || this.isNew) return next();
@@ -79,19 +80,20 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-//* 2. Deleting the user data without deleting the data from database;
+//! 2. Deleting the user data without deleting the data from database;
 
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
   next();
 });
 
-//*1 Introducing an instantiated method.
+//!1 Introducing an instantiated method.
 userSchema.methods.correctPassword = async function (password, userPassword) {
   return await bcrypt.compare(password, userPassword);
 };
 
-//*2 Checking the time password was changed.
+//! 2 Checking the time password was changed.
+
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimeStamp = parseInt(
@@ -105,7 +107,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
-//* Creating a token.
+//*! Creating a token.
 
 userSchema.methods.createPasswordResetToken = function () {
   // Changes to random strings that are put in hexadecimals.
