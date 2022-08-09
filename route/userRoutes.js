@@ -5,6 +5,7 @@ const {
   getUser,
   createUser,
   updateUser,
+  getMyData,
   updateUserData,
   deleteUserData,
   deleteUser,
@@ -35,7 +36,9 @@ router.post("/forgotpassword", forgotPassword);
 router.patch("/resetpassword/:token", resetPassword);
 router.patch("/updateMyPassword", protect, updatePassword);
 
-//* Route for updating and deleting user data
+//* Route for getting user own data
+router.get("/me", protect, getMyData, getUser);
+//*  updating and deleting user data
 router.patch("/updateMe", protect, updateUserData);
 router.delete("/deleteMe", protect, deleteUserData);
 

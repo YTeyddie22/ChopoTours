@@ -15,6 +15,14 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
+//!User ability to retrieve own data;
+
+exports.getMyData = (req, res, next) => {
+  req.params.id = req.user.id;
+
+  next();
+};
+
 //! Update the  User data in the body;
 
 exports.updateUserData = catchAsync(async (req, res, next) => {
