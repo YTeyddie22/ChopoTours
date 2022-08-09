@@ -1,5 +1,6 @@
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
+const ApiFeatures = require("./../utils/apiFeatures.js");
 
 //! Factory setting for deleting document
 exports.deleteOne = (Model) =>
@@ -49,7 +50,7 @@ exports.createOne = (Model) =>
     });
   });
 
-//! Factory setting for getting data.
+//! Factory setting for getting documents.
 
 exports.getOne = (Model, populateOptions) =>
   catchAsync(async (req, res, next) => {
@@ -62,6 +63,38 @@ exports.getOne = (Model, populateOptions) =>
       status: "success",
       data: {
         data: document,
+      },
+    });
+  });
+
+//! Factory setting for getting all Data;
+
+exports.getAll = (Model) =>
+  catchAsync(async (req, res, next) => {
+    //* For nested Get review on tours.
+
+    let filter = {};
+
+    if (req.params.tourId)
+      filter = {
+        tour: req.params.tourId,
+      };
+
+    //* For all the API features.
+    const features = new ApiFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitField()
+      .pagination();
+
+    const document = await features.query;
+
+    res.status(200).json({
+      status: "success",
+
+      result: document.length,
+      data: {
+        document,
       },
     });
   });
