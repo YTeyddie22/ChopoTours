@@ -24,22 +24,27 @@ router.use("/:tourId/reviews", reviewRouter);
 
 //! Aliasing Router
 
-router.route(`/top-5-tours`).get(aliasingTopTours, getAllTours);
+router.route(`/top-5-cheap`).get(aliasingTopTours, getAllTours);
 
 //!Aggregation Pipelining
 
 router.route("/tour-stats").get(getTourStats);
-router.route("/monthly-plan/:year").get(getMonthlyPlan);
+router
+  .route("/monthly-plan/:year")
+  .get(protect, restrictTo("admin", "lead-guide", "guide"), getMonthlyPlan);
 
 //! Creating a body middleware;
 //* Get and Post
-router.route("/").get(protect, getAllTours).post(createTour);
+router
+  .route("/")
+  .get(getAllTours)
+  .post(protect, restrictTo("admin", "lead-guide"), createTour);
 
 //* Patch,Update,Delete
 router
   .route("/:id")
-  .patch(updateTours)
   .get(getTour)
+  .patch(protect, restrictTo("admin", "lead-guide"), updateTours)
   .delete(protect, restrictTo("admin", "lead-guide"), deleteTours);
 
 module.exports = router;

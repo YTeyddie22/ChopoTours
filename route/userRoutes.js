@@ -18,6 +18,7 @@ const {
   forgotPassword,
   resetPassword,
   protect,
+  restrictTo,
   updatePassword,
 } = require("./../Controllers/authController");
 
@@ -34,13 +35,17 @@ router.post("/login", login);
 //* Routes for forgetting password and resetting via email.
 router.post("/forgotpassword", forgotPassword);
 router.patch("/resetpassword/:token", resetPassword);
-router.patch("/updateMyPassword", protect, updatePassword);
 
+router.use(protect);
+
+router.patch("/updateMyPassword", updatePassword);
 //* Route for getting user own data
-router.get("/me", protect, getMyData, getUser);
+router.get("/me", getMyData, getUser);
 //*  updating and deleting user data
-router.patch("/updateMe", protect, updateUserData);
-router.delete("/deleteMe", protect, deleteUserData);
+router.patch("/updateMe", updateUserData);
+router.delete("/deleteMe", deleteUserData);
+
+router.use(restrictTo("admin"));
 
 //* Router for the user;
 router.route("/").get(getAllUsers).post(createUser);

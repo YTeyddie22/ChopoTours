@@ -16,10 +16,16 @@ const reviewRouter = express.Router({
   mergeParams: true,
 });
 
+//! Authentication and Authorization
+reviewRouter.use(protect);
+
 reviewRouter
   .route("/")
   .get(getAllReviews)
-  .post(protect, restrictTo("user"), setTourUserIds, createReview);
+  .post(restrictTo("user"), setTourUserIds, createReview);
+
+//Step 2 Authorization
+reviewRouter.use(restrictTo("user", "admin"));
 
 reviewRouter
   .route("/:id")
