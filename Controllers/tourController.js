@@ -110,7 +110,7 @@ exports.getMonthlyPlan = catchAsync(async function (req, res, next) {
 //! Get,create,update and delete tours;
 exports.getAllTours = getAll(Tour);
 
-exports.getTour = getOne(Tour, { path: "review" });
+exports.getTour = getOne(Tour, { path: "review",strictPopulate:false });
 
 exports.createTour = createOne(Tour);
 
