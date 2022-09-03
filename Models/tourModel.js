@@ -34,6 +34,7 @@ const tourSchema = new mongoose.Schema(
       default: 4.5,
       min: [1, "rating should be more than 0"],
       max: [5, "Rating cannot exceed 5"],
+      set: (value) => Math.round(value * 10) / 10,
     },
     ratingsQuantity: {
       type: Number,
@@ -121,27 +122,25 @@ const tourSchema = new mongoose.Schema(
 );
 
 ///////////////////////////////////////////////////////////
-//! Creating indexes;
+//! Creating compound indexes;
 
-tourSchema.index({ 
-  price:1,
-  ratingsAverage:-1
-})
+tourSchema.index({
+  price: 1,
+  ratingsAverage: -1,
+});
 
-tourSchema.index({ 
-  slug:1
-})
-
+tourSchema.index({
+  slug: 1,
+});
 
 //! Inserting a virtual property
-
 tourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7;
 });
 
 //* Virtual property to populate
 
-tourSchema.virtual("reviews", {
+tourSchema.virtual("review", {
   ref: "Reviews",
   foreignField: "tour",
   localField: "_id",
@@ -165,9 +164,10 @@ tourSchema.pre("save", async function (next) {
 
 ////////////////////////////////////////////////////////////
 
-//! Query Middlewares
-
-//! Populating the guides data;
+/**
+ *!  Query Middlewares
+ ** Populating the guides data;
+ */
 
 tourSchema.pre(/^find/, function (next) {
   this.populate({
