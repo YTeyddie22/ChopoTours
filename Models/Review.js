@@ -35,6 +35,17 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+/**
+ *! Using compound indexing
+ **This is to prevent users' duplication of Reviews;
+ */
+
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
+/**
+ *! Find the user and populating it with reviews;
+ */
+
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: "user",
@@ -85,20 +96,23 @@ reviewSchema.post("save", function () {
   /**
    * *constructor refers to the current model.
    * *(model that has averageRatings function)
+   * *It creates a method that calculates the average of the current model;
    */
 
   this.constructor.calcAverageRatings(this.tour);
 });
 
-//! Updating the tour average ratings and Quantity;
-
-//* Using a regex to identify the FindOne method for either updating or deleting before we save;
+//! Updating and deleting the tour average ratings and Quantity;
+/*
+ *Using a regex to identify the FindOne method for either updating or deleting before we save
+ * It uses a workaround of updating and deleting the data using the pre and post middleware;
+ */
 
 reviewSchema.pre(/^findOneAnd/, async function (next) {
   //* Using this to rep the current data in the model and storing it in the current query variable.
 
   this.r = await this.findOne().clone();
-  console.log(this.r);
+
   next();
 });
 
