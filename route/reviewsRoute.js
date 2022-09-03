@@ -25,12 +25,11 @@ reviewRouter
   .post(restrictTo("user"), setTourUserIds, createReview);
 
 //Step 2 Authorization
-reviewRouter.use(restrictTo("user", "admin"));
 
 reviewRouter
   .route("/:id")
   .get(getReview)
-  .patch(updateReview)
-  .delete(deleteReview);
+  .patch(restrictTo("user", "admin"), updateReview)
+  .delete(restrictTo("user", "admin"), deleteReview);
 
 module.exports = reviewRouter;
