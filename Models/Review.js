@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Tour = require("./tourModel")
+const Tour = require("./tourModel");
 
 //! Schema for the model;
 const reviewSchema = new mongoose.Schema(
@@ -47,40 +47,66 @@ reviewSchema.pre(/^find/, function (next) {
 //! Creating a static method;
 
 reviewSchema.statics.calcAverageRatings = async function (tourId) {
-
   //* Start aggregating for solution
   const statistics = await this.aggregate([
-    {//* To match the id that we are looking for
-      $match:{tour:tourId}
+    {
+      //* To match the id that we are looking for
+      $match: { tour: tourId },
     },
     {
       //* Group them by the criteria below while performing calcs
-      $group:{
-        _id:'$tour',
-        numRating:{$sum:1},
-        avgRating:{$avg:'$rating'}
-      }
-    }
+      $group: {
+        _id: "$tour",
+        numRating: { $sum: 1 },
+        avgRating: { $avg: "$rating" },
+      },
+    },
   ]);
 
+  //* Check whether the document has ratings or not;
 
-//* Resolving a promise of the Tour by updating;
-  await Tour.findByIdAndUpdate(tourId,{
-    ratingsQuantity:statistics[0].numRating,
-    ratingsAverage:statistics[0].avgRating
-  })
-}
+  if (statistics.length > 0) {
+    //* Resolving a promise of the Tour by updating;
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: statistics[0].numRating,
+      ratingsAverage: statistics[0].avgRating,
+    });
+  } else {
+    //* Resolving a promise to neutral numbers
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
+};
 
 //! This is a post save so it does'nt need next();
-reviewSchema.post('save',function(){
-
+reviewSchema.post("save", function () {
   /**
    * *constructor refers to the current model.
    * *(model that has averageRatings function)
    */
-  
-  this.constructor.calcAverageRatings(this.tour)
-})
+
+  this.constructor.calcAverageRatings(this.tour);
+});
+
+//! Updating the tour average ratings and Quantity;
+
+//* Using a regex to identify the FindOne method for either updating or deleting before we save;
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  //* Using this to rep the current data in the model and storing it in the current query variable.
+
+  this.r = await this.findOne().clone();
+  console.log(this.r);
+  next();
+});
+
+//* After saving hook that helps in calculating and pushing to the model;
+reviewSchema.post(/^findOneAnd/, async function () {
+  //* We calculate the statistics for the review;
+  await this.r.constructor.calcAverageRatings(this.r.tour);
+});
 
 //! Creating the model;
 const Review = mongoose.model("Reviews", reviewSchema);
