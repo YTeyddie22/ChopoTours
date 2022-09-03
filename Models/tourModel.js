@@ -133,6 +133,11 @@ tourSchema.index({
   slug: 1,
 });
 
+//* Implements the geospatial data using mapbox;
+tourSchema.index({
+  startLocation: "2dsphere",
+});
+
 //! Inserting a virtual property
 tourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7;
