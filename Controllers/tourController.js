@@ -1,4 +1,4 @@
-//const AppError = require("./../utils/appError");
+const AppError = require("./../utils/appError");
 
 const Tour = require("./../Models/tourModel");
 
@@ -107,10 +107,57 @@ exports.getMonthlyPlan = catchAsync(async function (req, res, next) {
   });
 });
 
+/**
+ * ! Get tour Geospatial data controller;
+ */
+
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  //* getting all data;
+  const { distance, latlng, unit } = req.params;
+
+  //* Get coords;
+
+  const [lat, lng] = latlng.split(",");
+
+  //* Get the radians for the earth in miles and kilometres;
+
+  const radius = unit === "mi" ? distance / 3962.2 : distance / 6378.1;
+
+  //* Return a bad request message;
+  if (!lat || !lng) {
+    return next(
+      new AppError("Specify the latitude and longitude in the format lat,lng"),
+      400
+    );
+  }
+
+  /**The main Area for Geospatial functionality
+   * *We use the startLocation to find the area we are in;
+   * *GeoWithin is from MongoDb that checks the areas that are within a specific radius;
+   * *CenterSphere locates our center(Where we are at);
+   *
+   */
+  const tours = await Tour.find({
+    startLocation: {
+      $geoWithin: {
+        $centerSphere: [[lng, lat], radius],
+      },
+    },
+  });
+
+  res.status(200).json({
+    status: "success",
+    result: tours.length,
+    data: {
+      data: tours,
+    },
+  });
+});
+
 //! Get,create,update and delete tours;
 exports.getAllTours = getAll(Tour);
 
-exports.getTour = getOne(Tour, { path: "review",strictPopulate:false });
+exports.getTour = getOne(Tour, { path: "review", strictPopulate: false });
 
 exports.createTour = createOne(Tour);
 
