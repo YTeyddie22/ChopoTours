@@ -9,6 +9,7 @@ const {
   deleteTours,
   getTourStats,
   getMonthlyPlan,
+  getToursWithin,
 } = require("./../Controllers/tourController");
 
 const { protect, restrictTo } = require("./../Controllers/authController");
@@ -32,6 +33,19 @@ router.route("/tour-stats").get(getTourStats);
 router
   .route("/monthly-plan/:year")
   .get(protect, restrictTo("admin", "lead-guide", "guide"), getMonthlyPlan);
+
+/**
+ *! Geospatial Queries
+ * * Getting the route for the geospatial query;
+ *
+ * ?Example {{URL}}api/v1/tours/tours-within/400/center/34.111745,-118.113491/unit/mi;
+ */
+
+//* Alternative for specifying a url;
+
+router
+  .route("/tours-within/:distance/center/:latlng/unit/:unit")
+  .get(getToursWithin);
 
 //! Creating a body middleware;
 //* Get and Post
