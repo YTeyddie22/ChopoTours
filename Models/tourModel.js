@@ -182,7 +182,13 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-//* Tour that is not a secret tour
+/**
+ * TODO
+ * //* Tour that is not a secret tour
+
+
+ */
+
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
 
@@ -201,13 +207,13 @@ tourSchema.post(/^find/, function (docs, next) {
 
 //////////////////////////////////////////////////////////////
 
-//!Aggregate schema with a middleWare from mongoose
+// ! AGGREGATION MIDDLEWARE
+// tourSchema.pre('aggregate', function(next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
 
-//* Remove tour that doesn't match;
-tourSchema.pre("aggregate", function (next) {
-  this.pipeline().unshift({ $match: { $ne: true } });
-  next();
-});
+//   console.log(this.pipeline());
+//   next();
+// });
 
 const Tour = mongoose.model("Tour", tourSchema);
 

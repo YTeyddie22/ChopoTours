@@ -154,6 +154,62 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ *? Using the Geospatial Aggregation for getting distances
+ * * Always start with GeoNear;
+ */
+
+exports.getDistances = catchAsync(async (req, res, next) => {
+  const { latlng, unit } = req.params;
+
+  //* Get coords;
+
+  const [lat, lng] = latlng.split(",");
+
+  const multiplier = unit === "km" ? 0.001 : 0.000621371;
+
+  if (!lat || !lng) {
+    return next(
+      new AppError("Specify the latitude and longitude in the format lat,lng"),
+      400
+    );
+  }
+
+  /**
+   *? Getting the distances and determining how to convert the distance
+   * The Geonear amd distanceField are mandatory;
+   */
+
+  const distances = await Tour.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: "Point",
+          coordinates: [+lng, +lat],
+        },
+        distanceField: "distance",
+        distanceMultiplier: multiplier,
+        spherical: true,
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+
+  console.log(distances);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      data: distances,
+    },
+  });
+});
+
 //! Get,create,update and delete tours;
 exports.getAllTours = getAll(Tour);
 
