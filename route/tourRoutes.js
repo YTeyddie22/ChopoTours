@@ -10,6 +10,7 @@ const {
   getTourStats,
   getMonthlyPlan,
   getToursWithin,
+  getDistances,
 } = require("./../Controllers/tourController");
 
 const { protect, restrictTo } = require("./../Controllers/authController");
@@ -35,7 +36,7 @@ router
   .get(protect, restrictTo("admin", "lead-guide", "guide"), getMonthlyPlan);
 
 /**
- *! Geospatial Queries
+ *? Geospatial Queries
  * * Getting the route for the geospatial query;
  *
  * ?Example {{URL}}api/v1/tours/tours-within/400/center/34.111745,-118.113491/unit/mi;
@@ -47,7 +48,14 @@ router
   .route("/tours-within/:distance/center/:latlng/unit/:unit")
   .get(getToursWithin);
 
-//! Creating a body middleware;
+/**
+ * ? Creating the route for calculating the distance from user;
+ *
+ */
+
+router.route("/distances/:latlng/unit/:unit").get(getDistances);
+
+//? Creating a body middleware;
 //* Get and Post
 router
   .route("/")
