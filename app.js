@@ -1,4 +1,5 @@
 //? Packages
+const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
@@ -19,6 +20,22 @@ const AppError = require("./utils/appError");
 const globalErrorController = require("./controllers/errorController");
 
 const app = express();
+
+/**
+ * ? Setting up the view engine;( PUG);
+ * * Creating the path for the files used by the engine;
+ */
+
+app.set("view engine", "pug");
+
+app.set("views", path.join(__dirname, "views"));
+
+//! ESLINT error when we write  `S{__dirname/public}`
+/**
+ *?  For a static web
+ ** Alternative: app.use(express.static(`${__dirname}/public`));
+ */
+app.use(express.static(path.join(__dirname, "public")));
 
 //! Set security Headers;
 app.use(helmet());
@@ -64,10 +81,6 @@ app.use(
     ],
   })
 );
-
-//! ESLINT error when we write  `S{__dirname/public}`
-//* For a static web
-app.use(express.static(`${__dirname}/public`));
 
 //! Routing middleware
 app.use("/api/v1/tours", toursRouter);
