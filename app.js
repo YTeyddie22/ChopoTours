@@ -82,6 +82,17 @@ app.use(
   })
 );
 
+/**
+ * ? Rendering PUG
+ *  This is an example of how to render dynamically
+ */
+app.get("/", (req, res) => {
+  res.status(200).render("base", {
+    tour: "Nakuru Peeps",
+    user: "Teddy",
+  });
+});
+
 //! Routing middleware
 app.use("/api/v1/tours", toursRouter);
 app.use("/api/v1/users", userRouter);
