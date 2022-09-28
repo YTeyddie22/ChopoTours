@@ -14,6 +14,7 @@ const hpp = require("hpp");
 const toursRouter = require("./route/tourRoutes");
 const userRouter = require("./route/userRoutes");
 const reviewRouter = require("./route/reviewsRoute");
+const viewRouter = require("./route/viewRoute");
 
 //? Global Error
 const AppError = require("./utils/appError");
@@ -84,28 +85,10 @@ app.use(
 
 /**
  * ? Rendering PUG
- *  This is an example of how to render dynamically
+ * ! Routing middleware
  */
-app.get("/", (req, res) => {
-  res.status(200).render("base", {
-    tour: "Nakuru Peeps",
-    user: "Teddy",
-  });
-});
 
-app.get("/overview", (req, res) => {
-  res.status(200).render("overview", {
-    title: "All Tours",
-  });
-});
-
-app.get("/tour", (req, res) => {
-  res.status(200).render("tour", {
-    title: "The Nakuru life",
-  });
-});
-
-//! Routing middleware
+app.use("/", viewRouter);
 app.use("/api/v1/tours", toursRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
