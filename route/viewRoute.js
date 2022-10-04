@@ -10,6 +10,7 @@ const router = express.Router();
 
 router.get("/", getOverview);
 
-router.get("/tour", getTour);
+//* Slug is a text that will be placed in the URL;
+router.get("/tour/:slug", getTour);
 
 module.exports = router;
