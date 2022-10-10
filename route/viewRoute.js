@@ -1,5 +1,9 @@
 const express = require("express");
-const { getOverview, getTour } = require("../Controllers/viewController");
+const {
+  getOverview,
+  getTour,
+  loginForm,
+} = require("../Controllers/viewController");
 
 /**
  * Using express router to manage routes.
@@ -12,5 +16,9 @@ router.get("/", getOverview);
 
 //* Slug is a text that will be placed in the URL;
 router.get("/tour/:slug", getTour);
+
+//* Tour Login page
+
+router.get("/login", loginForm);
 
 module.exports = router;
