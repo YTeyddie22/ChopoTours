@@ -87,6 +87,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -117,6 +119,44 @@ exports.protect = catchAsync(async (req, res, next) => {
   //* Allow access to app;
 
   req.user = decodedCurrentUserId;
+
+  next();
+});
+
+//* For Logging In, No errors;
+
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  //*1 Get token and check if it is present
+
+  if (req.cookies.jwt) {
+    //* 2 Verifying the token.
+
+    //TODO
+    const decoder = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET
+    );
+
+    //*3 Check if the user still exists in the app or changed password.
+
+    const decodedCurrentUserId = await User.findById(decoder.id);
+
+    if (!decodedCurrentUserId) {
+      return next();
+    }
+
+    //*4 Check whether password changed after issuing of token
+
+    if (decodedCurrentUserId.changedPasswordAfter(decoder.iat)) {
+      return next();
+    }
+
+    //* User is logged in;
+    //? Each PUG template will have access to res.locals
+    res.locals.user = decodedCurrentUserId;
+
+    return next();
+  }
 
   next();
 });

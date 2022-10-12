@@ -8,6 +8,8 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 
+const cookieParser = require("cookie-parser");
+
 //? Modules;
 
 //? Routers
@@ -65,6 +67,10 @@ app.use("/api", limiter);
 
 app.use(express.json({ limit: "10kb" }));
 
+//! For parsing cookies
+
+app.use(cookieParser());
+
 //! Implement sanitization in the body;
 
 //* Against NOSQL injection
@@ -87,6 +93,13 @@ app.use(
     ],
   })
 );
+
+//! Test middleware;
+
+app.use((req, res, next) => {
+  console.log(req.cookies);
+  next();
+});
 
 /**
  * ? Rendering PUG
