@@ -4,6 +4,7 @@ const {
   getTour,
   loginForm,
 } = require("../Controllers/viewController");
+const { isLoggedIn } = require("../Controllers/authController");
 
 /**
  * Using express router to manage routes.
@@ -11,6 +12,8 @@ const {
  */
 
 const router = express.Router();
+
+router.use(isLoggedIn);
 
 router.get("/", getOverview);
 
