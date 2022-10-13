@@ -20,6 +20,7 @@ const {
   protect,
   restrictTo,
   updatePassword,
+  logout,
 } = require("./../Controllers/authController");
 
 //!Users' Routes
@@ -31,6 +32,10 @@ router.post("/signup", signup);
 
 //* Login router
 router.post("/login", login);
+
+//*Logout router;
+
+router.get("/logout", logout);
 
 //* Routes for forgetting password and resetting via email.
 router.post("/forgotpassword", forgotPassword);

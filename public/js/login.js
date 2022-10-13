@@ -29,3 +29,20 @@ export const login = async function (email, password) {
     showAlert("error", err.response.data.message);
   }
 };
+
+/**
+ * !Logging out;
+ */
+export const logout = async function () {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: "http://127.0.0.1:3000/api/v1/users/logout",
+    });
+
+    if (response.data.status === "success") location.reload(true);
+  } catch (err) {
+    console.log(err);
+    showAlert("error", "Error Logging out! Please try again");
+  }
+};
