@@ -3,6 +3,7 @@
  */
 const Tours = require("../Models/tourModel");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("./../utils/appError");
 
 //! Get overview data
 exports.getOverview = catchAsync(async (req, res, next) => {
@@ -39,6 +40,11 @@ exports.getTour = catchAsync(async (req, res, next) => {
     path: "review",
     fields: "review rating user",
   });
+
+  if (!tour) {
+    return next(new AppError("There is no such tour", 404));
+  }
+
   res
     .status(200)
     .set(

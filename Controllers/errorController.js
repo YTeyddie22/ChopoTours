@@ -33,43 +33,89 @@ function handleExpiredTokenError() {
   return new AppError("Token Expired, Please login Again", 401);
 }
 
-//! Error function in development
+/**
+ * ! Error function in Development
+ */
 
-const sendErrorDev = (err, res) => {
+const sendErrorDev = (err, req, res) => {
   const { status, message, stack, statusCode } = err;
+  /**
+   ** For The API (DEV)
+   */
+  if (req.originalUrl.startsWith("/api")) {
+    return res.status(statusCode).json({
+      status,
+      error: errorObj,
+      message,
+      stack,
+    });
+  }
 
-  let errorObj = { errmsg: message, ...err };
+  console.error("ERROR 💥", err);
 
-  res.status(statusCode).json({
-    status: status,
-    error: errorObj,
-    message: message,
-    stack: stack,
+  /**
+   ** For The Rendered Website (DEV)
+   */
+  return res.status(statusCode).render("error", {
+    title: "Something Is wrong!",
+    msg: message,
   });
 };
 
-//! Error function in production
+/**
+ * ! Error function in production
+ */
 
-const sendErrorProd = (err, res) => {
+const sendErrorProd = (err, req, res) => {
   //? For The Client invalidation
 
   const { status, message, statusCode } = err;
 
-  if (err.isOperational) {
-    res.status(statusCode).json({
-      status: status,
-      message: message,
-    });
-  } else {
+  /**
+   ** For The API
+   */
+
+  if (req.originalUrl.startsWith("/api")) {
+    if (err.isOperational) {
+      return res.status(statusCode).json({
+        status,
+        message,
+      });
+    }
+
     // 1) Log error
+
     console.error("ERROR 💥", err);
 
     // 2) Send generic message
-    res.status(500).json({
+
+    return res.status(500).json({
       status: "error",
       message: "Something went very wrong!",
     });
   }
+
+  /**
+   ** For The Rendered Website
+   */
+
+  if (err.isOperational) {
+    return res.status(statusCode).render("error", {
+      title: "Something Is wrong",
+      msg: message,
+    });
+  }
+
+  // 1) Log error
+
+  console.error("ERROR 💥", err);
+
+  // 2) Send generic message
+
+  return res.status(statusCode).render("error", {
+    title: "Something went terrible",
+    msg: "Please try again some other time",
+  });
 };
 
 //* Exporting the Errors either in production || development mode
@@ -81,7 +127,7 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || "error";
 
   if (process.env.NODE_ENV === "development") {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === "production") {
     //* Message Formats
 
@@ -93,6 +139,6 @@ module.exports = (err, req, res, next) => {
     if (error.name === "JsonWebTokenError") error = handleJsonTokenError(error);
     if (error.name === "TokenExpiredError") error = handleExpiredTokenError();
 
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
 };
