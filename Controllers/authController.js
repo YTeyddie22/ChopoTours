@@ -77,6 +77,20 @@ exports.login = catchAsync(async (req, res, next) => {
   createSignedToken(user, 200, res);
 });
 
+/**
+ * ! Creating a logout function;
+ * It is not a must to be secure;
+ * Log out and remove cookies after 10 seconds.
+ */
+
+exports.logout = (req, res, next) => {
+  res.cookie("jwt", "loggedout", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: "success" });
+};
+
 //! Protecting the password data
 exports.protect = catchAsync(async (req, res, next) => {
   //*1 Get token and check if it is present
@@ -125,41 +139,43 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 //* For Logging In, No errors;
 
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
   //*1 Get token and check if it is present
 
   if (req.cookies.jwt) {
     //* 2 Verifying the token.
+    try {
+      //TODO
+      const decoder = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
 
-    //TODO
-    const decoder = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_SECRET
-    );
+      //*3 Check if the user still exists in the app or changed password.
 
-    //*3 Check if the user still exists in the app or changed password.
+      const decodedCurrentUserId = await User.findById(decoder.id);
 
-    const decodedCurrentUserId = await User.findById(decoder.id);
+      if (!decodedCurrentUserId) {
+        return next();
+      }
 
-    if (!decodedCurrentUserId) {
+      //*4 Check whether password changed after issuing of token
+
+      if (decodedCurrentUserId.changedPasswordAfter(decoder.iat)) {
+        return next();
+      }
+
+      //* User is logged in;
+      //? Each PUG template will have access to res.locals
+      res.locals.user = decodedCurrentUserId;
+
+      return next();
+    } catch (e) {
       return next();
     }
-
-    //*4 Check whether password changed after issuing of token
-
-    if (decodedCurrentUserId.changedPasswordAfter(decoder.iat)) {
-      return next();
-    }
-
-    //* User is logged in;
-    //? Each PUG template will have access to res.locals
-    res.locals.user = decodedCurrentUserId;
-
-    return next();
   }
-
   next();
-});
+};
 
 //* Authorization to some functionality.
 
