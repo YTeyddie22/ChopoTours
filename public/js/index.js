@@ -33,3 +33,8 @@ if (loginForm) {
 }
 
 if (logOutBtn) logOutBtn.addEventListener("click", logout);
+
+/**
+ *
+ * TODO ~ Sign Up;
+ */
