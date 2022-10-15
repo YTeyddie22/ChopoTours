@@ -107,7 +107,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError(`You are not logged in. Confirm Passwords are the same`, 401)
+      new AppError(`You are not logged in. Please log to gain access`, 401)
     );
   }
 
@@ -133,6 +133,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   //* Allow access to app;
 
   req.user = decodedCurrentUserId;
+  res.locals.user = decodedCurrentUserId;
 
   next();
 });

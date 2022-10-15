@@ -3,8 +3,9 @@ const {
   getOverview,
   getTour,
   loginForm,
+  getAccount,
 } = require("../Controllers/viewController");
-const { isLoggedIn } = require("../Controllers/authController");
+const { isLoggedIn, protect } = require("../Controllers/authController");
 
 /**
  * Using express router to manage routes.
@@ -13,15 +14,19 @@ const { isLoggedIn } = require("../Controllers/authController");
 
 const router = express.Router();
 
-router.use(isLoggedIn);
-
-router.get("/", getOverview);
+router.get("/", isLoggedIn, getOverview);
 
 //* Slug is a text that will be placed in the URL;
-router.get("/tour/:slug", getTour);
+router.get("/tour/:slug", isLoggedIn, getTour);
 
 //* Tour Login page
 
-router.get("/login", loginForm);
+router.get("/login", isLoggedIn, loginForm);
+
+router.get("/me", protect, getAccount);
+
+/**
+ * TODO ~  Sign Up Route.
+ */
 
 module.exports = router;
