@@ -64,3 +64,13 @@ exports.loginForm = (req, res) => {
     title: "Log into account",
   });
 };
+
+exports.getAccount = (req, res) => {
+  res.status(200).render("account", {
+    title: "Your Account",
+  });
+};
+
+/**
+ * TODO ~ SignUp controller
+ */

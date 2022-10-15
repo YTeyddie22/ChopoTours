@@ -46,3 +46,7 @@ export const logout = async function () {
     showAlert("error", "Error Logging out! Please try again");
   }
 };
+
+/**
+ * TODO ~ Sign Up;
+ */
