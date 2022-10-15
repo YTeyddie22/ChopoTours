@@ -45,7 +45,7 @@ const sendErrorDev = (err, req, res) => {
   if (req.originalUrl.startsWith("/api")) {
     return res.status(statusCode).json({
       status,
-      error: errorObj,
+      error: err,
       message,
       stack,
     });
