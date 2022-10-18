@@ -6,7 +6,9 @@ const {
   createUser,
   updateUser,
   getMyData,
+  uploadUserPhoto,
   updateUserData,
+  resizeUserPhoto,
   deleteUserData,
   deleteUser,
 } = require("./../Controllers/usersController");
@@ -47,7 +49,7 @@ router.patch("/updateMyPassword", updatePassword);
 //* Route for getting user own data
 router.get("/me", getMyData, getUser);
 //*  updating and deleting user data
-router.patch("/updateMe", updateUserData);
+router.patch("/updateMe", uploadUserPhoto, resizeUserPhoto, updateUserData);
 router.delete("/deleteMe", deleteUserData);
 
 router.use(restrictTo("admin"));
