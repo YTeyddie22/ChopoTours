@@ -40,6 +40,8 @@ module.exports = sendEmail;
 /**
  *
  * ! Creating a new Email class (Complex);
+ *
+ * * MAil trap prevents leaking of Emails to real life users.
  */
 
 module.exports = class Email {
@@ -96,8 +98,16 @@ module.exports = class Email {
     await this.newTransport().sendMail(mailOptions);
   }
 
-  //? This is the first email;
+  //? This is the first email when Signing up
   async sendWelcome() {
     await this.send("welcome", "Welcome to the ChopoTours Family!");
+  }
+
+  //? This is the password reset mail;
+  async sendPasswordReset() {
+    await this.send(
+      "resetPassword",
+      "Your password reset token (Valid for 10 minutes)"
+    );
   }
 };

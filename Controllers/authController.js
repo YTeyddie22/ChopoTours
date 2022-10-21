@@ -68,7 +68,6 @@ exports.signup = catchAsync(async function (req, res, next) {
 //! for Logging in
 
 exports.login = catchAsync(async (req, res, next) => {
-  s;
   const { email, password } = req.body;
 
   if (!email || !password)
@@ -214,19 +213,21 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  //? 3. Send token to email address
-
   const resetUrl = `${req.protocol}://${req.get(
     "host"
   )}/api/v1/users/resetPassword/${resetToken}`;
 
+  /*
   //?4 Response message incase of success when await the promise.
 
   const responseMessage = `Forgot your password? Patch your new authenticated password to. ${resetUrl}\n You can also ignore the message if you did not forget`;
 
+  */
+
+  //? 3. Send token to email address
   try {
     /** 
-     * ? Code no longer works
+     * ? Code no longer works but was for Sending Email
     await sendMail({
       email: user.email,
       subject: " The reset token (valid for 10 minutes)",
@@ -234,6 +235,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     });
 
     */
+
+    await new Email(user, resetUrl).sendPasswordReset();
 
     res.status(200).json({
       status: "success",
