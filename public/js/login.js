@@ -26,6 +26,7 @@ export const login = async function (email, password) {
     }
     console.log(result);
   } catch (err) {
+    console.log(err);
     showAlert("error", err.response.data.message);
   }
 };

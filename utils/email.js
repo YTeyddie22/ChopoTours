@@ -40,6 +40,8 @@ module.exports = sendEmail;
 /**
  *
  * ! Creating a new Email class (Complex);
+ *
+ * * MAil trap prevents leaking of Emails to real life users.
  */
 
 module.exports = class Email {
@@ -76,14 +78,11 @@ module.exports = class Email {
      */
     //* 1 Render HTML based on PUG template;
 
-    const html = pug.renderFile(
-      `${__dirname}/../views/emails/${template}.pug`,
-      {
-        firstName: this.firstName,
-        url: this.url,
-        subject,
-      }
-    );
+    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
+      firstName: this.firstName,
+      url: this.url,
+      subject,
+    });
 
     //* 2 Define email options;
     const mailOptions = {
@@ -99,8 +98,16 @@ module.exports = class Email {
     await this.newTransport().sendMail(mailOptions);
   }
 
-  //? This is the first email;
+  //? This is the first email when Signing up
   async sendWelcome() {
     await this.send("welcome", "Welcome to the ChopoTours Family!");
+  }
+
+  //? This is the password reset mail;
+  async sendPasswordReset() {
+    await this.send(
+      "resetPassword",
+      "Your password reset token (Valid for 10 minutes)"
+    );
   }
 };

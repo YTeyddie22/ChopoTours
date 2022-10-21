@@ -4,7 +4,7 @@ const { promisify } = require("util");
 const User = require("../Models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
-const sendMail = require("./../utils/email");
+const Email = require("./../utils/email");
 
 //* Refactored JWT sign function.
 
@@ -56,6 +56,11 @@ exports.signup = catchAsync(async function (req, res, next) {
     confirmPassword: req.body.confirmPassword,
     role: req.body.role,
   });
+
+  const url = `${req.protocol}://${req.get("host")}/me`;
+  console.log(url);
+
+  await new Email(newUser, url).sendWelcome();
 
   createSignedToken(newUser, 201, res);
 });
@@ -208,22 +213,30 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  //? 3. Send token to email address
-
   const resetUrl = `${req.protocol}://${req.get(
     "host"
   )}/api/v1/users/resetPassword/${resetToken}`;
 
+  /*
   //?4 Response message incase of success when await the promise.
 
   const responseMessage = `Forgot your password? Patch your new authenticated password to. ${resetUrl}\n You can also ignore the message if you did not forget`;
 
+  */
+
+  //? 3. Send token to email address
   try {
+    /** 
+     * ? Code no longer works but was for Sending Email
     await sendMail({
       email: user.email,
       subject: " The reset token (valid for 10 minutes)",
       responseMessage,
     });
+
+    */
+
+    await new Email(user, resetUrl).sendPasswordReset();
 
     res.status(200).json({
       status: "success",
