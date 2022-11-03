@@ -16,6 +16,7 @@ const cookieParser = require("cookie-parser");
 const toursRouter = require("./route/tourRoutes");
 const userRouter = require("./route/userRoutes");
 const reviewRouter = require("./route/reviewsRoute");
+const bookingRouter = require("./route/bookingRoute");
 const viewRouter = require("./route/viewRoute");
 
 //? Global Error
@@ -41,6 +42,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 //! Set security Headers;
+
 app.use(
   helmet({
     contentSecurityPolicy: false,
@@ -111,6 +113,7 @@ app.use("/", viewRouter);
 app.use("/api/v1/tours", toursRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
+app.use("/api/v1/booking", bookingRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
