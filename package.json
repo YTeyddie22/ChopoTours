@@ -7,8 +7,8 @@
     "start": "nodemon server.js ",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js",
-    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
-    "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
+    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url .",
+    "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url ."
   },
   "author": "Teddy Yongo",
   "license": "ISC",
@@ -33,6 +33,7 @@
     "pug": "^3.0.2",
     "sharp": "^0.31.1",
     "slugify": "^1.6.5",
+    "stripe": "^7.0.0",
     "validator": "^13.7.0",
     "xss-clean": "^0.1.1"
   },
