@@ -1,8 +1,9 @@
 const stripe = require("stripe")(
   "sk_test_51LwdjmEMxU7yGtcvHlFHQBxVcFp2xOd7RQxKuLLAYztQFX80R68b7aBEwOF8GmvBrjf7S49r5uOCt2iqQ8Cg5ESu00m9IbSkTc"
 );
-const AppError = require("./../utils/appError");
-const Tour = require("./../Models/tourModel");
+const AppError = require("../utils/appError");
+const Tour = require("../Models/tourModel");
+const Booking = require("../Models/Booking");
 
 const catchAsync = require("./../utils/catchAsync");
 
@@ -30,7 +31,9 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
-    success_url: `${req.protocol}://${req.get("host")}/`,
+    success_url: `${req.protocol}://${req.get("host")}/?tour=${
+      req.params.tourId
+    }&user=${req.user.id}&price=${tour.price}`,
     cancel_url: `${req.protocol}://${req.get("host")}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
@@ -59,4 +62,27 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     status: "success",
     session,
   });
+});
+
+//! Booking checkout;
+exports.createBookingCheckout = catchAsync(async (req, res, next) => {
+  //* Checks for the queries in the url;
+  const { tour, user, price } = req.query;
+
+  /**
+   * Checks if the params are there and if not,
+   * It moves to the next middleware in the stack.
+   * This is the get overview Page;
+   */
+  if (!tour && !user && !price) return next();
+
+  //Create a new booking/
+  await Booking.create({
+    tour,
+    user,
+    price,
+  });
+
+  //* Redirects to the overview page after booking
+  res.redirect(req.originalUrl.split("?")[0]);
 });
