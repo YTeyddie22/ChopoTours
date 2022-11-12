@@ -2,6 +2,7 @@
  *Imports
  */
 const Tours = require("../Models/tourModel");
+const Bookings = require("../Models/Booking");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
@@ -28,11 +29,8 @@ exports.getTour = catchAsync(async (req, res, next) => {
    * 1. Get data for req tour and include reviews and guide.
    * 2. Build the template ( To be done in overview page)
    * 3. Render the template using data retrieved.
-   *
-   *
-   * TODO since mapbox has an issue with cors
+
    */
-  console.log("This is one tour");
 
   //? 1.Get data from Collection
 
@@ -65,12 +63,35 @@ exports.loginForm = (req, res) => {
   });
 };
 
+/**
+ * TODO ~ SignUp controller
+ */
+
+exports.signupForm = (req, res) => {
+  res.status(200).render("signup", {
+    title: "Sign up",
+  });
+};
+
 exports.getAccount = (req, res) => {
   res.status(200).render("account", {
     title: "Your Account",
   });
 };
 
-/**
- * TODO ~ SignUp controller
- */
+exports.getMyTours = catchAsync(async (req, res, next) => {
+  //1 Find all bookings;
+
+  const bookings = await Bookings.find({ user: req.user.id });
+
+  //2 Find tours with returned Ids
+
+  const tourIds = bookings.map((el) => el.tour);
+
+  const tours = await Tours.find({ _id: { $in: tourIds } });
+
+  res.status(200).render("overview", {
+    title: "My Bookings",
+    tours,
+  });
+});
