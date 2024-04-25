@@ -2,20 +2,20 @@
 
 const Review = require("../Models/Review");
 const {
-  deleteOne,
-  updateOne,
-  createOne,
-  getOne,
-  getAll,
+    deleteOne,
+    updateOne,
+    createOne,
+    getOne,
+    getAll,
 } = require("./factoryHandler");
 
 //! Getting all the reviews
 
 //! Middleware function for getting IDs
 exports.setTourUserIds = (req, res, next) => {
-  if (!req.body.tour) req.body.tour = req.params.tourId;
-  if (!req.body.user) req.body.user = req.user.id;
-  next();
+    if (!req.body.tour) req.body.tour = req.params.tourId;
+    if (!req.body.user) req.body.user = req.user.id;
+    next();
 };
 
 //! Create, Get, Update and delete methods for reviews;

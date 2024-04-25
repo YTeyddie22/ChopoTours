@@ -1,18 +1,18 @@
 const express = require("express");
 
 const {
-  aliasingTopTours,
-  getAllTours,
-  getTour,
-  createTour,
-  updateTours,
-  deleteTours,
-  getTourStats,
-  getMonthlyPlan,
-  getToursWithin,
-  getDistances,
-  uploadTourImages,
-  resizeTourImages,
+    aliasingTopTours,
+    getAllTours,
+    getTour,
+    createTour,
+    updateTours,
+    deleteTours,
+    getTourStats,
+    getMonthlyPlan,
+    getToursWithin,
+    getDistances,
+    uploadTourImages,
+    resizeTourImages,
 } = require("./../Controllers/tourController");
 
 const { protect, restrictTo } = require("./../Controllers/authController");
@@ -34,8 +34,8 @@ router.route(`/top-5-cheap`).get(aliasingTopTours, getAllTours);
 
 router.route("/tour-stats").get(getTourStats);
 router
-  .route("/monthly-plan/:year")
-  .get(protect, restrictTo("admin", "lead-guide", "guide"), getMonthlyPlan);
+    .route("/monthly-plan/:year")
+    .get(protect, restrictTo("admin", "lead-guide", "guide"), getMonthlyPlan);
 
 /**
  *? Geospatial Queries
@@ -47,8 +47,8 @@ router
 //* Alternative for specifying a url;
 
 router
-  .route("/tours-within/:distance/center/:latlng/unit/:unit")
-  .get(getToursWithin);
+    .route("/tours-within/:distance/center/:latlng/unit/:unit")
+    .get(getToursWithin);
 
 /**
  * ? Creating the route for calculating the distance from user;
@@ -60,21 +60,21 @@ router.route("/distances/:latlng/unit/:unit").get(getDistances);
 //? Creating a body middleware;
 //* Get and Post
 router
-  .route("/")
-  .get(getAllTours)
-  .post(protect, restrictTo("admin", "lead-guide"), createTour);
+    .route("/")
+    .get(getAllTours)
+    .post(protect, restrictTo("admin", "lead-guide"), createTour);
 
 //* Patch,Update,Delete
 router
-  .route("/:id")
-  .get(getTour)
-  .patch(
-    protect,
-    restrictTo("admin", "lead-guide"),
-    uploadTourImages,
-    resizeTourImages,
-    updateTours
-  )
-  .delete(protect, restrictTo("admin", "lead-guide"), deleteTours);
+    .route("/:id")
+    .get(getTour)
+    .patch(
+        protect,
+        restrictTo("admin", "lead-guide"),
+        uploadTourImages,
+        resizeTourImages,
+        updateTours
+    )
+    .delete(protect, restrictTo("admin", "lead-guide"), deleteTours);
 
 module.exports = router;

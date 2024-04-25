@@ -1,16 +1,16 @@
 const express = require("express");
 const {
-  getOverview,
-  getTour,
-  loginForm,
-  signupForm,
-  getAccount,
-  getMyTours,
+    getOverview,
+    getTour,
+    loginForm,
+    signupForm,
+    getAccount,
+    getMyTours,
 } = require("../Controllers/viewController");
 const {
-  isLoggedIn,
-  protect,
-  signup,
+    isLoggedIn,
+    protect,
+    signup,
 } = require("../Controllers/authController");
 
 const { createBookingCheckout } = require("../Controllers/bookingController");
