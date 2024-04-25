@@ -29,16 +29,16 @@ const multerStorage = multer.diskStorage({
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb(new AppError("Not an image! Please upload only image.", 400), false);
-  }
+    if (file.mimetype.startsWith("image")) {
+        cb(null, true);
+    } else {
+        cb(new AppError("Not an image! Please upload only image.", 400), false);
+    }
 };
 
 const upload = multer({
-  storage: multerStorage,
-  fileFilter: multerFilter,
+    storage: multerStorage,
+    fileFilter: multerFilter,
 });
 
 exports.uploadUserPhoto = upload.single("photo");
@@ -48,103 +48,103 @@ exports.uploadUserPhoto = upload.single("photo");
  */
 
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
-  if (!req.file) return next();
-  /**
-   * The file that was saved as a buffer
-   *
-   * ?Sharp resizes the Image.
-   */
+    if (!req.file) return next();
+    /**
+     * The file that was saved as a buffer
+     *
+     * ?Sharp resizes the Image.
+     */
 
-  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+    req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-  await sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`public/img/users/${req.file.filename}`);
+    await sharp(req.file.buffer)
+        .resize(500, 500)
+        .toFormat("jpeg")
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/users/${req.file.filename}`);
 
-  next();
+    next();
 });
 
 //! Normal JS Function for filtering the objects;
 const filterObj = (obj, ...allowedFields) => {
-  const newObj = {};
+    const newObj = {};
 
-  //* Filter the data using the object keys that have been put in an array
-  Object.keys(obj).forEach((el) => {
-    if (allowedFields.includes(el)) newObj[el] = obj[el];
-  });
+    //* Filter the data using the object keys that have been put in an array
+    Object.keys(obj).forEach((el) => {
+        if (allowedFields.includes(el)) newObj[el] = obj[el];
+    });
 
-  return newObj;
+    return newObj;
 };
 
 //!User ability to retrieve own data;
 
 exports.getMyData = (req, res, next) => {
-  req.params.id = req.user.id;
+    req.params.id = req.user.id;
 
-  next();
+    next();
 };
 
 //! Update the  User data in the body;
 
 exports.updateUserData = catchAsync(async (req, res, next) => {
-  console.log(req.file);
-  console.log(req.body);
-  //* 1. Create an error incase the user tries to update the password;
+    console.log(req.file);
+    console.log(req.body);
+    //* 1. Create an error incase the user tries to update the password;
 
-  if (req.body.password || req.body.confirmPassword) {
-    return next(
-      new AppError(
-        "You are trying to update password from the wrong place Friend",
-        400
-      )
-    );
-  }
-
-  //* FIlter the objects to prevent malicious changes;
-  const filteredObjects = filterObj(req.body, "name", "email");
-
-  if (req.file) filteredObjects.photo = req.file.filename;
-
-  //* 2. Update the user document;
-
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user.id,
-    filteredObjects,
-    {
-      new: true,
-      runValidators: true,
+    if (req.body.password || req.body.confirmPassword) {
+        return next(
+            new AppError(
+                "You are trying to update password from the wrong place Friend",
+                400
+            )
+        );
     }
-  );
 
-  res.status(200).json({
-    status: "success",
-    data: {
-      user: updatedUser,
-    },
-  });
+    //* FIlter the objects to prevent malicious changes;
+    const filteredObjects = filterObj(req.body, "name", "email");
+
+    if (req.file) filteredObjects.photo = req.file.filename;
+
+    //* 2. Update the user document;
+
+    const updatedUser = await User.findByIdAndUpdate(
+        req.user.id,
+        filteredObjects,
+        {
+            new: true,
+            runValidators: true,
+        }
+    );
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            user: updatedUser,
+        },
+    });
 });
 
 //! Delete the user but not from the database;
 
 exports.deleteUserData = catchAsync(async (req, res, next) => {
-  await User.findByIdAndUpdate(req.user.id, {
-    active: false,
-  });
+    await User.findByIdAndUpdate(req.user.id, {
+        active: false,
+    });
 
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
+    res.status(204).json({
+        status: "success",
+        data: null,
+    });
 });
 
 //! Get specific user
 exports.createUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not defined! Go and sign up!",
-  });
+    res.status(500).json({
+        status: "error",
+        message: "This route is not defined! Go and sign up!",
+    });
 };
 
 //! Get all Users methods;

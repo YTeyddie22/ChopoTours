@@ -1,3 +1,4 @@
 {
-  "singleQuotes": true
+    "singleQuotes": true,
+    "tabWidth": 4
 }

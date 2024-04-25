@@ -1,28 +1,28 @@
 const express = require("express");
 
 const {
-  getAllUsers,
-  getUser,
-  createUser,
-  updateUser,
-  getMyData,
-  uploadUserPhoto,
-  updateUserData,
-  resizeUserPhoto,
-  deleteUserData,
-  deleteUser,
+    getAllUsers,
+    getUser,
+    createUser,
+    updateUser,
+    getMyData,
+    uploadUserPhoto,
+    updateUserData,
+    resizeUserPhoto,
+    deleteUserData,
+    deleteUser,
 } = require("./../Controllers/usersController");
 
 //* Router for authentication and login
 const {
-  signup,
-  login,
-  forgotPassword,
-  resetPassword,
-  protect,
-  restrictTo,
-  updatePassword,
-  logout,
+    signup,
+    login,
+    forgotPassword,
+    resetPassword,
+    protect,
+    restrictTo,
+    updatePassword,
+    logout,
 } = require("./../Controllers/authController");
 
 //!Users' Routes
