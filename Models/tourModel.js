@@ -200,10 +200,12 @@ tourSchema.pre(/^find/, function (next) {
 
 //! query middleware for post data;
 
+/*
 tourSchema.post(/^find/, function (docs, next) {
     console.log(`Query took ${Date.now() - this.start} milliseconds!`);
     next();
 });
+*/
 
 //////////////////////////////////////////////////////////////
 

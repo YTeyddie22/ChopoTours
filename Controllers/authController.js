@@ -58,7 +58,7 @@ exports.signup = catchAsync(async function (req, res, next) {
     });
 
     const url = `${req.protocol}://${req.get("host")}/me`;
-    console.log(url);
+    
 
     await new Email(newUser, url).sendWelcome();
 
@@ -322,5 +322,4 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
     createSignedToken(user, 200, res);
 
-    console.log(user.password);
 });

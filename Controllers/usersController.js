@@ -89,8 +89,7 @@ exports.getMyData = (req, res, next) => {
 //! Update the  User data in the body;
 
 exports.updateUserData = catchAsync(async (req, res, next) => {
-    console.log(req.file);
-    console.log(req.body);
+   
     //* 1. Create an error incase the user tries to update the password;
 
     if (req.body.password || req.body.confirmPassword) {
