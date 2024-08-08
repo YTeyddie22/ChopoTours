@@ -23,6 +23,7 @@ const viewRouter = require("./route/viewRoute");
 //? Global Error
 const AppError = require("./utils/appError");
 const globalErrorController = require("./Controllers/errorController");
+const compression = require('compression');
 
 const app = express();
 
@@ -97,11 +98,12 @@ app.use(
     })
 );
 
+app.use(compression())
+
 //! Test middleware;
 
 app.use((req, res, next) => {
     req.requstTime = new Date().toISOString();
-    console.log(req.cookies);
     next();
 });
 

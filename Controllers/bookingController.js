@@ -17,7 +17,7 @@ const {
 dotEnv.config({
     path: "./config.env",
 });
-console.log(process.env.STRIPE_SECRET_KEY);
+
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     /**
@@ -62,7 +62,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
     //* Create session as response;
 
-    console.log(session);
+  
 
     res.status(200).json({
         status: "success",
