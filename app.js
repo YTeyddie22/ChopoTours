@@ -27,6 +27,8 @@ const compression = require('compression');
 
 const app = express();
 
+app.enable("trust proxy");
+
 /**
  * ? Setting up the view engine;( PUG);
  * * Creating the path for the files used by the engine;
