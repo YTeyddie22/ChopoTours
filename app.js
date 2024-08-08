@@ -38,6 +38,19 @@ app.set("view engine", "pug");
 
 app.set("views", path.join(__dirname, "views"));
 
+
+//CORS
+
+app.use(cors())
+
+
+//Non-simple request
+
+app.options('*', cors());
+
+//Specific route
+//app.options("/api/v1/tours/:id",cors())
+
 //! ESLINT error when we write  `S{__dirname/public}`
 /**
  *?  For a static web
